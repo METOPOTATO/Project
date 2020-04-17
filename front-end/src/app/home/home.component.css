@@ -1,0 +1,11 @@
+.bg {
+    /* The image used */
+    background-image: url('/assets/images/Greenwich.jpg');
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    background-size: cover;
+}

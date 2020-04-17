@@ -16,7 +16,6 @@ const routes: Routes = [
   {path:'staff',component:StaffComponent,canActivate:[MyService] ,data:{role:['staff']} },
   {path:'student',component:StudentComponent,canActivate:[MyService] ,data:{role:['student']}},
 
-  // {path:'tutor/room/:id',component:Component,canActivate:[MyService] ,data:{role:['tutor']}},
   {path:'tutor',component:TutorComponent,canActivate:[MyService] ,data:{role:['tutor']},
     children:[
       {path:'room/:id',component:RoomComponent}

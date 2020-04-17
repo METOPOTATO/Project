@@ -44,7 +44,7 @@ export class RoomComponent implements OnInit {
       console.log(data)
       this.service.socket.emit('get',data.get('id'))
     })
-    this.service.socket.emit('get',this.route.snapshot.paramMap.get('id'))
+    // this.service.socket.emit('get',this.route.snapshot.paramMap.get('id'))
     return Observable.create((observer) => {
       this.service.socket.on('get', (data) => {
         observer.next(data)
@@ -78,6 +78,7 @@ export class RoomComponent implements OnInit {
       return true
     }
   }
+
   fileToUpload: File = null;
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);

@@ -5,6 +5,7 @@ import { Observable, pipe } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { map } from 'rxjs/operators';
 import { dashCaseToCamelCase } from '@angular/compiler/src/util';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-student',
@@ -16,18 +17,42 @@ export class StudentComponent implements OnInit, OnDestroy {
   message: string
   listMessage: Message[]
 
+  private roomUrl = 'http://localhost:2222/room'
 
-  constructor(private messageService: MessageService) {
-    this.messageService.listMesaages.subscribe((data) => {
-      this.listMessage = data
+  constructor(private messageService: MessageService,private http: HttpClient) {
+    // this.messageService.listMesaages.subscribe((data) => {
+    //   this.listMessage = data
+    // })
+
+  }
+
+  getMessage(){
+    let param = { 'student': localStorage.getItem('userEmail') }
+    this.http.get<any>(this.roomUrl, { params: param }).pipe(
+      map((data) => {
+        localStorage.setItem('room', data.room_id)
+        
+        this.messageService.socket.emit('get',localStorage.getItem('room'))
+      })
+    ).subscribe()
+    
+    this.messageService.socket.emit('get',localStorage.getItem('room'))
+    return Observable.create((observer)=>{
+      this.messageService.socket.on('get',(data)=>{
+        observer.next(data)
+      })
+    })
+  }
+
+  ngOnInit(): void {
+    this.getMessage().subscribe((data)=>{
+      this.listMessage = data;
     })
     this.messageService.socket.on('message',(data)=>{
       this.listMessage.push(data)
       
     })
-  }
-
-  ngOnInit(): void { }
+   }
 
   ngOnDestroy(): void { }
   
@@ -55,7 +80,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.fullMessage.content = this.message
     this.fullMessage.room = parseInt(localStorage.getItem('room'))
     this.fullMessage.by = localStorage.getItem('userEmail')
-    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd', 'en-US')
+    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en-US')
 
     this.messageService.send(this.fullMessage)
     this.message = ''
