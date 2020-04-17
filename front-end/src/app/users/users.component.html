@@ -1,0 +1,17 @@
+<div *ngIf="users">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User Id</th>
+                <th>User Name</th>
+                
+            </tr>
+        </thead>
+        <tbody *ngFor="let user of users">
+            <tr>
+                <th>{{user.email}}</th>
+                <th>{{user.password}}</th>
+            </tr>
+        </tbody>
+    </table>
+</div>

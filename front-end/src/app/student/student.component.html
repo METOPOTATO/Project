@@ -1,0 +1,39 @@
+<!-- <input type="text" [(ngModel)]="message" placeholder="message">
+<button (click)="send()">Send</button>
+
+<div *ngIf="me">
+    <div *ngFor="let m of me">
+        <p style="color: chartreuse;" *ngIf="checkSender(m)">{{m.message_id }} {{m.message_content}} </p>
+        <p style="color: cornflowerblue;" *ngIf="!checkSender(m)">{{m.message_id }} {{m.message_content}} </p>
+    </div>
+</div> -->
+
+<div class="containers">
+    <div class="row">
+        <div class="col-sm-4" id='form1'></div>
+        <div class="col-sm-4 mess" id='form2'>
+            <div class="messages" *ngFor="let m of listMessage">
+                <div class="container" *ngIf="checkSender(m)">
+                    <div class="send">
+                        <p>{{m.message_content}}</p>
+                        <span class="sender">Jame</span>
+            
+                    </div>
+                </div>
+                <div class="container" *ngIf="!checkSender(m)">
+                    <div class="receive">
+                        <p>{{m.message_content}}</p>
+                        <span class="sender">Linh</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="send-button">
+                <input type="text" [(ngModel)]="message" placeholder="message">
+                <button (click)="send()">Send</button>
+            </div>
+
+        </div>
+        <div class="col-sm-4 up-file" id='form3'></div>
+    </div>
+</div>

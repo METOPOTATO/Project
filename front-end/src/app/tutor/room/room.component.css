@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+  }
+.container{
+    border: turquoise solid 1px;
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 2px 2px;
+    width: 100%;
+    background-color: lightgreen;
+}
+.container .send{
+    background-color: lightblue;
+
+}
+
+.container .receive{
+    background-color: darkgrey;
+
+}
+
+span{
+    font-style: italic;
+}
+p{
+    color: #000 ;
+    font-weight: bold;
+}
+ul{
+    list-style-type: none;
+}
+.messages{
+    width: 100%;
+}
+/* .col-sm-4{
+    background-color:lightcoral;
+} */

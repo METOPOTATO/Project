@@ -1,0 +1,35 @@
+<div class="containers">
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 mess">
+            <div class="messages" *ngFor="let m of messages">
+                <div class="container" *ngIf="checkSender(m)">
+                    <div class="send">
+                        <p>{{m.message_content}}</p>
+                        <span class="sender">Jame</span>
+                    </div>
+                </div>
+                <div class="container" *ngIf="!checkSender(m)">
+                    <div class="receive">
+                        <p>{{m.message_content}}</p>
+                        <span class="sender">Linh</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="send-button">
+                <input type="text" [(ngModel)]="message" placeholder="message">
+                <button (click)="send()">Send</button>
+            </div>
+
+        </div>
+        <div class="col-sm-4 up-file">
+            <div class="form-group">
+                <label for="file">Choose File</label>
+                <input type="file"
+                       id="file"
+                       (change)="handleFileInput($event.target.files)">
+            </div>
+        </div>
+    </div>
+</div>
