@@ -1,0 +1,10 @@
+- thời gian, địa điểm họp, số thành viên tham gia buổi họp
+*
+- ý kiến của các thành viên trong quá trình họp ( số biểu quyết, ý kiến tranh luận)
+- rút ra kết quả từ ý kiến của các thành viên -> thống nhất
+* 
+- nội dung đã hoàn thành
+- nội dung chưa hoàn thành theo dự kiến -> cách khắc phục
+=> đánh giá
+- nội dung triển khai cho lần kế tiếp
+
