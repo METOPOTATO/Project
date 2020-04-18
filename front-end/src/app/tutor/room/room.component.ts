@@ -10,28 +10,29 @@ import { Observable } from 'rxjs';
   styleUrls: ['./room.component.css']
 })
 export class RoomComponent implements OnInit {
-  fullMessage:Message
+  fullMessage: Message
   message
   messages = []
   room
-  constructor(private service:TutorService,private route:ActivatedRoute ) {
-    
+  isShowMessage = true
+  constructor(private service: TutorService, private route: ActivatedRoute) {
+
 
     // this.service.listMessage.subscribe((data)=>{
     //   this.messages = data
     //   console.log(data)
     // })
 
-    this.getMessages().subscribe((data)=>{
+    this.getMessages().subscribe((data) => {
       this.messages = data
     })
 
-    
-    this.service.socket.on('message',(data)=>{
+
+    this.service.socket.on('message', (data) => {
       this.messages.push(data)
     })
 
-    this.route.paramMap.subscribe((data)=>{
+    this.route.paramMap.subscribe((data) => {
       this.room = data.get('id')
       console.log(this.room)
       // console.log(this.room)
@@ -40,9 +41,9 @@ export class RoomComponent implements OnInit {
   }
 
   public getMessages() {
-    this.route.paramMap.subscribe((data)=>{
+    this.route.paramMap.subscribe((data) => {
       console.log(data)
-      this.service.socket.emit('get',data.get('id'))
+      this.service.socket.emit('get', data.get('id'))
     })
     // this.service.socket.emit('get',this.route.snapshot.paramMap.get('id'))
     return Observable.create((observer) => {
@@ -52,21 +53,21 @@ export class RoomComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
-  public send(){
-    
+  public send() {
+
     this.fullMessage = new Message()
     this.fullMessage.room = this.room
     this.fullMessage.content = this.message
     this.fullMessage.by = localStorage.getItem('userEmail')
     this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd', 'en-US')
 
-    
+
     this.service.send(this.fullMessage)
     this.message = ''
-    
-    this.service.socket.emit('message',this.fullMessage)
+
+    this.service.socket.emit('message', this.fullMessage)
     // this.service.listMessage = this.service.getMessages()
     // this.service.listMessage.subscribe((data) => {
     //   console.log(data)
@@ -82,5 +83,9 @@ export class RoomComponent implements OnInit {
   fileToUpload: File = null;
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
-}
+  }
+
+  show(){
+    this.isShowMessage = !this.isShowMessage
+  }
 }

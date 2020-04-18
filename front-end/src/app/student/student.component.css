@@ -41,6 +41,13 @@ ul {
     background-color: lightskyblue;
 }
 
+
+/* .top-message {
+    width: 100%;
+    background-color: cadetblue;
+    border-radius: 15px;
+} */
+
 .chat {
     margin-top: auto;
     margin-bottom: auto;
@@ -50,6 +57,7 @@ ul {
     height: 500px;
     border-radius: 15px !important;
     background-color: rgba(0, 0, 0, 0.4) !important;
+    margin-right: 10px;
 }
 
 .contacts_body {

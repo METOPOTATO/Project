@@ -17,7 +17,7 @@ import zMODEL
 from zMODEL import db 
 db = db() 
 
-
+# login for users
 @app.route('/login', methods = ['POST'])
 def login():
     token = ''
@@ -38,7 +38,7 @@ def login():
             token = create_access_token(identity = email)
     return jsonify({'token':token,'role':role,'email':email})
 
-#create account 
+# create account for roles
 @app.route('/signup/<role>', methods = ['PUT'])
 def signup(role):
     email = request.json.get('email')
@@ -50,7 +50,7 @@ def signup(role):
     result = db.signup(role,value)
     return jsonify({'result':result})
 
-#get room for student
+# get room for student
 @app.route('/room',methods = ['GET'])
 def getRoom():
     print('get room')
@@ -69,7 +69,7 @@ def get_list_rooms():
     return jsonify(rooms)
 
 
-
+# emit a single mesage to client
 @socketio.on('message')
 def message(data):
     print('on message')
@@ -81,7 +81,7 @@ def message(data):
     join_room(room)
     emit('message',data,room = room)
 
-
+# get list all messages stored in database
 @socketio.on('get')
 def get(room):
     print('on get')
@@ -90,6 +90,7 @@ def get(room):
     join_room(room)
     emit('get',data,room= room)
 
+# add a message to datanase
 @socketio.on('add_message')
 def add_message(message):
     print('on add_message')

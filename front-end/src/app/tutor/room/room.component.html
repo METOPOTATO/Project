@@ -1,34 +1,49 @@
 <div class="containers">
     <div class="row">
         <div class="col-sm-4"></div>
-        <div class="col-sm-4 mess">
-            <div class="messages" *ngFor="let m of messages">
-                <div class="container" *ngIf="checkSender(m)">
-                    <div class="send">
-                        <p>{{m.message_content}}</p>
-                        <span class="sender">Jame</span>
-                    </div>
-                </div>
-                <div class="container" *ngIf="!checkSender(m)">
-                    <div class="receive">
-                        <p>{{m.message_content}}</p>
-                        <span class="sender">Linh</span>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 mess" id='form2'>
 
-                    </div>
-                </div>
-            </div>
-            <div class="send-button">
-                <input type="text" [(ngModel)]="message" placeholder="message">
-                <button (click)="send()">Send</button>
+            <div class="top-message nav justify-content-center">
+                <button (click)="show()" type="button" class="btn btn-dark rounded-circle" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
 
-        </div>
-        <div class="col-sm-4 up-file">
-            <div class="form-group">
-                <label for="file">Choose File</label>
-                <input type="file"
-                       id="file"
-                       (change)="handleFileInput($event.target.files)">
+            <div class="card" *ngIf="isShowMessage">
+                <div class="card-header msg_head">
+                    <span id="action_menu_btn">
+
+                    </span>
+                </div>
+                <div class="card-body msg_card_body">
+                    <div class="message" *ngFor="let m of messages">
+                        <div class="d-flex justify-content-start mb-4" *ngIf="!checkSender(m)">
+                            <div class="receive">
+                                <span>{{m.message_content}}</span>
+                                <div class="msg_time">8:40 AM, Today</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mb-4" *ngIf="checkSender(m)">
+                            <div class="send">
+                                <span>{{m.message_content}}</span>
+                                <div class="msg_time">8:40 AM, Today</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <textarea name="" class="form-control type_msg" placeholder="Type your message..." [(ngModel)]="message"></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text send_btn" (click)="send()">
+                                        <i class="fas fa-location-arrow"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

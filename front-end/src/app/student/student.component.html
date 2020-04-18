@@ -36,9 +36,17 @@
         <div class="col-sm-4 mess" id='form2'>
             <!-- <div class="container-fluid h-100">
                 <div class="row justify-content-center h-100"> -->
-            <div class="card">
-                <div class="card-header msg_head">
+            <div class="top-message nav justify-content-center">
+                <button (click)="show()" type="button" class="btn btn-dark rounded-circle" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
+            <div class="card" *ngIf="isShowMessage">
+                <div class="card-header msg_head">
+                    <span id="action_menu_btn">
+
+                    </span>
                 </div>
                 <div class="card-body msg_card_body">
                     <div class="message" *ngFor="let m of listMessage">
@@ -64,7 +72,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text send_btn" (click)="send()">
                                         <i class="fas fa-location-arrow"></i>
-                                    </span>
+                            </span>
                         </div>
                     </div>
                 </div>
