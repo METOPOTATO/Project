@@ -31,6 +31,7 @@ ul {
 
 #form1 {
     background-color: lightgreen;
+    height: 100%;
 }
 
 #form2 {
@@ -41,10 +42,9 @@ ul {
     background-color: lightskyblue;
 }
 
-
-/* .mess {
-    margin-left: 20px;
-} */
+.message {
+    padding-top: 20px;
+}
 
 .chat {
     margin-top: auto;

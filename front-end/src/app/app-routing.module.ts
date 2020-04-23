@@ -11,6 +11,7 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HomeComponent } from './home/home.component';
 import { RoomComponent } from './tutor/room/room.component';
+import { TimetableComponent } from './timetable/timetable.component';
 
 const routes: Routes = [
   {path:'staff',component:StaffComponent,canActivate:[MyService] ,data:{role:['staff']} },
@@ -18,10 +19,12 @@ const routes: Routes = [
 
   {path:'tutor',component:TutorComponent,canActivate:[MyService] ,data:{role:['tutor']},
     children:[
-      {path:'room/:id',component:RoomComponent}
+      {path:'room/:id/mess',component:RoomComponent},
+      {path:'room/:id/calendar',component:TimetableComponent}
     ]
   },
-
+  {path:'tutor/room/:id/timetable',component:TimetableComponent,data:{role:['tutor']}},
+  {path:'student/timetable',component:TimetableComponent ,data:{role:['student']}},
   {path:'list',component:UsersComponent,canActivate:[MyService]},
   {path:'login',component:LoginFormComponent},
   {path:'forbidden',component:ForbiddenComponent},

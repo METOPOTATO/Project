@@ -1,48 +1,70 @@
-<!-- <div class="containers">
-    <div class="row">
-        <div class="col-sm-4" id='form1'></div>
-        <div class="col-sm-4 mess" id='form2'>
-            <div class="messages" *ngFor="let m of listMessage">
-                <div class="container" *ngIf="checkSender(m)">
-                    <div class="send">
-                        <p>{{m.message_content}}</p>
-                        <span class="sender">Jame</span>
-                    </div>
-                </div>
-                <div class="container" *ngIf="!checkSender(m)">
-                    <div class="receive">
-                        <p>{{m.message_content}}</p>
-                        <span class="sender">Linh</span>
-                    </div>
-                </div>
-            </div>
-            <div class="send-button">
-                <input type="text" [(ngModel)]="message" placeholder="message">
-                <button (click)="send()">Send</button>
-            </div>
-        </div>
-        <div class="col-sm-4 up-file" id='form3'>
-        </div>
-    </div>
-</div> -->
-
-
-
-
 <div class="containers">
-    <div class="row">
-        <div class="col-sm-4" id='form1'></div>
-        <div class="col-sm-4 up-file" id='form3'></div>
-        <div class="col-sm-4 mess" id='form2'>
+    <div class="d-flex justify-content-around">
+        <div class="p-2">
+            <button (click)="showFile() " type="button " class="btn btn-primary " aria-label="Close ">
+                    <span aria-hidden="true ">Files</span>
+                </button>
+        </div>
+        <div class="p-2">
+            <button (click)="showMessage() " type="button" class="btn btn-primary " aria-label="Close ">
+                    <span aria-hidden="true ">Message</span>
+                </button>
+        </div>
+
+        <div class="p-2">
+            <button (click)="showTimeTable()" type="button " class="btn btn-primary " aria-label="Close ">
+                    <span aria-hidden="true ">TimeTable</span>
+                    <!-- <router-outlet></router-outlet> -->
+            </button>
+        </div>
+
+        <div class="p-2">
+            <button (click)="showDashboard()" type="button " class="btn btn-primary " aria-label="Close ">
+                    <span aria-hidden="true ">Dasboard</span>
+                    <!-- <router-outlet></router-outlet> -->
+            </button>
+        </div>
+
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="col-sm-6 " *ngIf="isShowFile">
+            <div class='custom-file justify-content-center'>
+                <input #myInput type="file" (change)="onFileSelected($event)" class="custom-file-input ">
+                <label class='custom-file-label' (click)="onUpload() ">Choose File</label>
+                <div class="d-flex justify-content-center ">
+                    <button type=" button " (click)="onUpload() " class="btn btn-primary ">Upload </button>
+                </div>
+            </div>
+
+            <div class="progress form-group " *ngIf="process>0">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="process">
+                    {{process}}
+                </div>
+            </div>
+            <div *ngIf='listFile'>
+                <div class="files" *ngFor="let file of listFile">
+                    <hr>
+                    <div class="single-file">
+                        <div>
+                            <h3>{{file.document_name}}</h3>
+                            <input class="btn btn-primary" type="button" (click)="download(file.document_name,file.full_path)" value="Download" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-sm-4 up-file" id='form3'></div> -->
+        <div class="col-sm-6 mess" id='form2' *ngIf="isShowMessage">
             <!-- <div class="container-fluid h-100">
                 <div class="row justify-content-center h-100"> -->
-            <div class="top-message nav justify-content-center">
-                <button (click)="show()" type="button" class="btn btn-dark rounded-circle" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
 
-            <div class="card" *ngIf="isShowMessage">
+            <!-- <div class="top-message nav justify-content-center">
+                <button (click)="show()" type="button" class="btn btn-dark " aria-label="Close">
+                    Message
+                </button>
+            </div> -->
+
+            <div class="card">
                 <div class="card-header msg_head">
                     <span id="action_menu_btn">
 
@@ -79,6 +101,14 @@
             </div>
             <!-- </div>
             </div> -->
+        </div>
+
+        <div *ngIf="isShowTimeTable">
+            <app-timetable></app-timetable>
+        </div>
+
+        <div *ngIf="isShowDashboard">
+
         </div>
     </div>
 </div>

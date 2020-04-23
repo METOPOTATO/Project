@@ -32,7 +32,6 @@ export class MessageService  {
         console.log('room: '+localStorage.getItem('room'))
       })
     ).subscribe()
-
   }
 
   public send(message) {

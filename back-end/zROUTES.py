@@ -51,6 +51,13 @@ def signup(role):
     result = db.signup(role,value)
     return jsonify({'result':result})
 
+@app.route('/list_files', methods=['GET'])
+def get_list_file():
+   room = request.args.get('room')
+   r = (room,)
+   print(get_document(r))
+   return jsonify(get_document(r)) 
+
 
 if __name__ == '__main__':
     app.run(host = '127.0.0.1', port ='2222')
