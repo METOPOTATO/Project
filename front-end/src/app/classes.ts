@@ -22,3 +22,32 @@ export class Event {
     color: string
     room: number
 }
+
+export class Comments{
+  content:string
+  docId:string
+}
+
+export class UserDashboard{
+  email:String
+  room:String
+}
+
+export class DashboardData{
+  
+}
+// ///////////////////////
+export class Human{
+    mail:String
+    name:String
+  }
+
+  export class Room{
+    student_email:string
+    tutor_email:string
+    creator:string
+  }
+
+export class Result{
+  result:string
+}

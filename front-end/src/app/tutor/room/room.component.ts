@@ -1,17 +1,26 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { TutorService } from 'src/app/tutor.service';
-import { Message, Document } from 'src/app/classes';
+import { Message, Document,Comments } from 'src/app/classes';
 import { formatDate } from '@angular/common';
 import { ActivatedRoute } from "@angular/router";
 import { Observable } from 'rxjs';
 import { FileService } from 'src/app/file.service'
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
+
 import { ThrowStmt } from '@angular/compiler';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': 'my-auth-token'
+  })
+};
 @Component({
   selector: 'app-room',
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css']
 })
+
 export class RoomComponent implements OnInit,OnDestroy {
   fullMessage: Message
   message
@@ -78,12 +87,24 @@ export class RoomComponent implements OnInit,OnDestroy {
     this.fullMessage.room = this.room
     this.fullMessage.content = this.message
     this.fullMessage.by = localStorage.getItem('userEmail')
-    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd', 'en-US')
+    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd h:mm:ss', 'en-US')
     this.service.send(this.fullMessage)
     this.message = ''
     this.service.socket.emit('message', this.fullMessage)
   }
 
+  sendk($event) {
+    //send data Message
+    this.fullMessage = new Message()
+    this.fullMessage.room = this.room
+    this.fullMessage.content = this.message
+    this.fullMessage.by = localStorage.getItem('userEmail')
+    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd h:mm:ss', 'en-US')
+    this.service.send(this.fullMessage)
+    this.message = ''
+    this.service.socket.emit('message', this.fullMessage)
+
+  }
   // check who is sender
   checkSender(m) {
     if (m.upload_by === localStorage.getItem('userEmail')) {
@@ -106,7 +127,7 @@ export class RoomComponent implements OnInit,OnDestroy {
     this.isShowTimeTable = false
   }
 
-  isShowTimeTable = true 
+  isShowTimeTable = false
   showTimeTable(){
     this.isShowTimeTable = true
     this.isShowMessage = false
@@ -168,6 +189,26 @@ export class RoomComponent implements OnInit,OnDestroy {
     this.route.paramMap.subscribe(data=>{
       this.btnUpload = data.get('id')
       
+    })
+  }
+
+  url_comment = 'http://localhost:2222/add_comment'
+  comment
+  sendComment(file_id){
+    let co:Comments = new Comments()
+    co.content = this.comment
+    co.docId =  file_id
+    this.http.put<any>(this.url_comment,co,httpOptions).subscribe()
+    this.comment = ""
+    alert('send comment successfully')
+  }
+
+  url_show_comment
+  comments
+  showComment(file_id){
+    this.service.socket.emit('get_comment',file_id)
+    this.service.socket.on('get_comment',(data)=>{
+      this.comments = data
     })
   }
 }

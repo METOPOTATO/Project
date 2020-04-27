@@ -12,4 +12,10 @@ export class AppComponent {
 
   }
 
+  checkRole(){
+    if(!localStorage.getItem('room')){
+      alert('You dont have a room yet')
+    }
+  }
+
 }

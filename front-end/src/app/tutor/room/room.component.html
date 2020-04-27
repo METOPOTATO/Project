@@ -41,10 +41,20 @@
         <div *ngIf='listFile'>
             <div class="files" *ngFor="let file of listFile">
                 <hr>
-                <div class="single-file">
-                    <div>
+                <div class="single-file row">
+                    <div class='col-sm-4'>
                         <h3>{{file.document_name}}</h3>
                         <input class="btn btn-primary" type="button" (click)="download(file.document_name,file.full_path)" value="Download" />
+                        <br><input type="text" [(ngModel)]="comment" placeholder="send comment">
+                        <button (click)="sendComment(file.document_id)">Send</button>
+                    </div>
+                    <div class="col-sm-7 ">
+                        <div class="overflow-auto" style="height: 100px;">
+                            <div *ngFor="let comment of comments">
+                                <p *ngIf="file.document_id==comment.document_id">{{comment.comment_content}}</p>
+                            </div>
+                        </div>
+                        <button (click)="showComment(file.document_id)">View comment</button>
                     </div>
                 </div>
             </div>
@@ -60,13 +70,13 @@
                     <div class="d-flex justify-content-start mb-4" *ngIf="!checkSender(m)">
                         <div class="receive">
                             <span>{{m.message_content}}</span>
-                            <div class="msg_time">8:40 AM, Today</div>
+                            <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mb-4" *ngIf="checkSender(m)">
                         <div class="send">
                             <span>{{m.message_content}}</span>
-                            <div class="msg_time">8:40 AM, Today</div>
+                            <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
                         </div>
 
                     </div>
@@ -74,7 +84,7 @@
             </div>
             <div class="card-footer">
                 <div class="input-group">
-                    <textarea name="" class="form-control type_msg" placeholder="Type your message..." [(ngModel)]="message"></textarea>
+                    <textarea name="" (keyup.enter)="sendk($event)" class="form-control type_msg" placeholder="Type your message..." [(ngModel)]="message"></textarea>
                     <div class="input-group-append">
                         <span class="input-group-text send_btn" (click)="send()">
                                         <i class="fas fa-location-arrow"></i>

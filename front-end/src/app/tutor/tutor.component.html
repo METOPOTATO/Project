@@ -1,18 +1,3 @@
-<!-- <div class="row">
-    <div class="col-sm-3 col-lg-3">
-        <ul class="list-group nav-bar" *ngFor="let room of listRooms">
-
-            <a [routerLink]="['/tutor/room',room.room_id]" class="list-group-item">{{room.room_id}}</a>
-
-        </ul>
-    </div>
-    <div class="col-sm-9 col-lg-9">
-        <router-outlet></router-outlet>
-    </div>
-</div> -->
-
-
-
 <div id="wrapper">
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
         <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/tutor">
@@ -22,8 +7,12 @@
             <div class="sidebar-brand-text mx-3">{{currentTutor}}</div>
         </a>
         <hr class="sidebar-divider my-0">
+        <li class="nav-item">
+            <a [routerLink]="['/tutor/dashboard']" class="nav-link">Dashboard</a>
+        </li>
         <li class="nav-item" *ngFor="let room of listRooms">
-            <a [routerLink]="['/tutor/room',room.room_id,'mess']" class="nav-link">Room {{room.room_id}}</a>
+            <!-- <a [routerLink]="['/tutor/room',room.room_id,'mess']" class="nav-link">Room {{room.room_id}}</a> -->
+            <a [routerLink]="['/tutor/room',room.room_id]" class="nav-link">Room {{room.room_id}}</a>
         </li>
     </ul>
     <div id="content-wrapper" class="d-flex flex-column">

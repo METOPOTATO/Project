@@ -22,6 +22,8 @@ import zMODEL
 from zMODEL import db 
 db = db() 
 
+
+####### Linh ##############
 # login for users
 @app.route('/login', methods = ['POST'])
 def login():
@@ -97,6 +99,7 @@ def get(room):
     print(room)
     data = db.get_message(room)
     join_room(room)
+    print(data)
     emit('get',data,room= room)
 
 # add a message to datanase
@@ -182,6 +185,108 @@ def add_event(event):
     event = (title,start,end,color,room)
     print(event)
     db.insert_event(event)
+
+# get dashboard date
+@app.route('/dashboard_message', methods = ['GET'])
+def get_dashboard_message():
+    print('get dashboard')
+    start = request.args.get('start')
+    print(start)
+    end = request.args.get('end')
+    print(end)
+    room =  request.args.get('room')
+    print(room)
+    value = (start,end,room)
+    result = db.get_dashboard(value)
+    print(result)
+    return jsonify(result)
+
+# insert comment
+@app.route('/add_comment', methods = ['PUT'])
+def insert_comment():
+    print('add comment')
+    content = request.json.get('content')
+    print(content)
+    doc_id = request.json.get('docId')
+    comment = (content,doc_id)
+    result = db.insert_comment(comment)
+    return jsonify(result)
+
+@socketio.on('get_comment')
+def get_comment(comment):
+    print('on get comment')
+    print(comment)
+    result = db.get_comments((comment,))
+    print(result)
+    emit('get_comment',result)
+
+#student report
+@socketio.on('get_report')
+def get_report(id):
+    print('get report')
+    result = db.get_report((id['email'],id['email'],id['room']))
+    print(result)
+    emit('get_report',result)
+
+@app.route('/get_report', methods = ['GET'])
+def get_report():
+    email = request.args.get('email')
+    room = request.args.get('room')
+    result = db.get_report((email,email,room))
+    return jsonify(result)
+
+@app.route('/tutor_get_report_message_7',methods=['GET'])
+def tutor_get_report_message_7():
+    print('tutor_get_report_message')
+    email = request.args.get('email')
+    result = db.tutor_get_report_message_7((email,email))
+    print(result)
+    return jsonify(result)
+
+@app.route('/tutor_get_report_message_28',methods=['GET'])
+def tutor_get_report_message_28():
+    print('tutor_get_report_message')
+    email = request.args.get('email')
+    result = db.tutor_get_report_message_28((email,email))
+    print(result)
+    return jsonify(result)
+
+@app.route('/get_all_tutor_messages',methods=['GET'])
+def get_all_tutor_messages():
+    print('get_all_tutor_messages')
+    email = request.args.get('email')
+    result = db.get_tutor_all_messages((email,email))
+    print(result)
+    return jsonify(result)
+########### Huy #############
+@app.route('/get_available_students', methods = ['GET'])
+def get_availablestudent():
+    res = db.getavilstu()
+    string = []
+    for result in res:
+        content = {'mail':result['student_email'], 'name':result['student_name']}
+        string.append(content)
+    return jsonify(string)
+
+@app.route('/getalltutor', methods = ['GET'])
+def get_alltutor():
+    res = db.getalltutor()
+    string = []
+    for result in res:
+        content = {'mail':result['tutor_email'], 'name':result['tutor_name']}
+        string.append(content)
+    return jsonify(string)
+
+@app.route('/allocation', methods = ['POST'])
+def r_allocate():
+    print(request)
+    student_email = request.json.get('student_email')
+    tutor_email = request.json.get('tutor_email')
+    creator =  request.json.get('creator')
+    room = (student_email, tutor_email, creator)
+    result = db.allocate(room)
+    return jsonify({'result':result})
+
 
 if __name__ == '__main__':
     socketio.run(app,port=2222)

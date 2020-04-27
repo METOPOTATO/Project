@@ -20,18 +20,21 @@ export class MessageService  {
   list2 = []
   constructor(private http: HttpClient) {
     this.socket = io(this.url)
+    
+      this.socket.emit('get',localStorage.getItem('room'))
+      //get list messages
+      this.listMesaages = this.getMessages() 
+      //get room
+      let param = { 'student': localStorage.getItem('userEmail') }
+      // this.http.get<any>(this.roomUrl, { params: param }).pipe(
+      //   map((data) => {
+      //     if(data){
+      //       localStorage.setItem('room', data.room_id)
+      //     }
+      //   })
+      // ).subscribe()
+    
 
-    this.socket.emit('get',localStorage.getItem('room'))
-    //get list messages
-    this.listMesaages = this.getMessages() 
-    //get room
-    let param = { 'student': localStorage.getItem('userEmail') }
-    this.http.get<any>(this.roomUrl, { params: param }).pipe(
-      map((data) => {
-        localStorage.setItem('room', data.room_id)
-        console.log('room: '+localStorage.getItem('room'))
-      })
-    ).subscribe()
   }
 
   public send(message) {

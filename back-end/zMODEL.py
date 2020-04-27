@@ -186,3 +186,224 @@ class db:
         except:
             raise Exception
             return 'wrong'
+
+    #get dashboard data
+    def get_dashboard(self,value):
+        try:
+            query = "select * from documents where upload_at between %s and %s and room_id = %s"
+            conn = conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,value)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+    
+    # insert comments
+    def insert_comment(self,event):
+        try:
+            query = "insert into comments(comment_content,document_id) values(%s,%s);"
+            con = conn1()
+            cursor =  con.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,event)
+            con.commit()
+            result = cursor.rowcount
+            cursor.close()
+            con.close()
+            return result 
+        except:
+            raise Exception
+            return 'wrong'
+
+    # get comments
+    def get_comments(self,id):
+        try:
+            query = "select * from comments where document_id = %s"
+            conn = conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,id)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+
+    #  get  reports
+    def get_report_message(self,id):
+        try:
+            query = "select count(*) as mess from messages where upload_at > date(now()) - interval 7 day and room_id = %s;"
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,id)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+    def get_report_document(self,id):
+        try:
+            query = "select count(*) as doc from documents where upload_at > date(now()) - interval 7 day and room_id = %s;"
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,id)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+    def get_report_calendar(self,id):
+        try:
+            query = "select count(*) as can from timetable where time_start > date(now()) - interval 7 day and room_id = %s;"
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,id)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+# student report
+    def get_report(self,id):
+        try:
+            query7 = '''
+            select a.count as mes,b.count as doc,c.count as can from 
+            (select count(*) as count from messages  where upload_at > date(now()) - interval 7 day and upload_by =%s) as a,
+            (select count(*) as count from documents where upload_at > date(now()) - interval 7 day and upload_by =%s) as b,
+            (select count(*) as count from timetable where time_start > date(now()) - interval 7 day and room_id =%s) as c;
+            '''
+            query3 = '''
+            select a.count as mes,b.count as doc,c.count as can from 
+            (select count(*) as count from messages  where upload_at > date(now()) - interval 3 day and upload_by =%s) as a,
+            (select count(*) as count from documents where upload_at > date(now()) - interval 3 day and upload_by =%s) as b,
+            (select count(*) as count from timetable where time_start > date(now()) - interval 3 day and room_id =%s) as c;
+            '''
+            query14 = '''
+            select a.count as mes,b.count as doc,c.count as can from 
+            (select count(*) as count from messages  where upload_at > date(now()) - interval 14 day and upload_by =%s) as a,
+            (select count(*) as count from documents where upload_at > date(now()) - interval 14 day and upload_by =%s) as b,
+            (select count(*) as count from timetable where time_start > date(now()) - interval 14 day and room_id =%s) as c;
+            '''
+            query28 = '''
+            select a.count as mes,b.count as doc,c.count as can from 
+            (select count(*) as count from messages  where upload_at > date(now()) - interval 28 day and upload_by =%s) as a,
+            (select count(*) as count from documents where upload_at > date(now()) - interval 28 day and upload_by =%s) as b,
+            (select count(*) as count from timetable where time_start > date(now()) - interval 28 day and room_id =%s) as c;
+            '''
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query3,id)
+            result3 = cursor.fetchall()
+            cursor.execute(query7,id)
+            result7 = cursor.fetchall()
+            cursor.execute(query14,id)
+            result14 = cursor.fetchall()
+            cursor.execute(query28,id)
+            result28 = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result3 + result7 + result14 + result28
+        except:
+            raise Exception
+            return 'wrong'
+
+    def tutor_get_report_message_7(self,tutor_email):
+        try:
+            query = '''
+            select a.student_email as student,
+            (select student_name from students as d where d.student_email = a.student_email) as name,
+            a.room_id as room,
+            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 7 day) as send, 
+            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 7 day) as receive
+            from rooms as a where a.tutor_email= %s;
+            '''
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,tutor_email)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+
+    def tutor_get_report_message_28(self,tutor_email):
+        try:
+            query = '''
+            select a.student_email as student,
+            (select student_name from students as d where d.student_email = a.student_email) as name,
+            a.room_id as room,
+            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 28 day) as send, 
+            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 28 day) as receive
+            from rooms as a where a.tutor_email= %s;
+            '''
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,tutor_email)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+
+    def get_tutor_all_messages(self,email):
+        try:
+            query = '''
+            select a.tutor_messages,b.tutor_students from 
+            (select count(*) as tutor_messages  from messages where upload_by = %s) as a,
+            (select count(*) as tutor_students from rooms where tutor_email = %s) as b;
+            '''
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query,email)
+            result = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+    ####### Huy ##########
+    def allocate(self,value):
+        query = 'insert into rooms (student_email, tutor_email, creater) values (%s,%s,%s);'
+        conn = conn1()
+        cursor = conn.cursor(buffered=True , dictionary=True)
+        cursor.execute(query,value)
+        conn.commit()
+        row_affected = cursor.rowcount
+        conn.close()
+        cursor.close()
+        return row_affected
+
+    def getalltutor(self):
+        conn = conn1()
+        query = 'select * from tutors'
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query)
+        result = cursor.fetchall()
+        conn.close()
+        cursor.close()
+        return result
+
+    def getavilstu(self):
+        conn = conn1()
+        query = 'select * from students where student_email NOT IN ( select student_email from rooms )'
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+
+    

@@ -1,1 +1,57 @@
-<p>staff works!</p>
+<div id="wrapper">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/tutor">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Hi {{currentStaff}}</div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item">
+            <a [routerLink]="['/staff/dashboard']" (click)="saveTutorDashboard()" class="nav-link">Go to my dashboard</a>
+        </li>
+
+    </ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div class="container-fluid">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                    <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let row">
+                            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selectRowH($event,row): null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="mail">
+                        <th mat-header-cell *matHeaderCellDef> Mail</th>
+                        <td mat-cell *matCellDef="let element"> {{element.mail}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)" (click)="selectRow()">
+                    </tr>
+                </table>
+
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <hr>
+                    <button (click)="allocate()">Allocate</button>
+                    <hr>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Select an option</mat-label>
+                    <mat-select [(value)]="selectedTutor">
+                        <mat-option *ngFor="let i of listTutor" value="{{i.mail}}">{{i.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <p>You selected: {{selectedTutor}}</p>
+                <a [routerLink]="['/staff/dashboard']" (click)="saveTutorDashboard()" class="nav-link">Go to {{selectedTutor}} dashboard </a>
+            </div>
+        </div>
+    </div>
+</div>

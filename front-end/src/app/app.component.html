@@ -4,7 +4,7 @@
             <a class="nav-link" routerLink="/">Home</a>
         </li>
         <li *ngIf="auth.checkRole()==='student'">
-            <a class="nav-link" routerLink="/student">My Room</a>
+            <a class="nav-link" routerLink="/student" (click)="checkRole()">My Room</a>
         </li>
         <li *ngIf="auth.checkRole()==='staff'">
             <a class="nav-link" routerLink="/staff">Staff</a>

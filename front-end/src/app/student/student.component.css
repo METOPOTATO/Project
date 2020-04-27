@@ -204,3 +204,11 @@ ul {
         margin-bottom: 15px !important;
     }
 }
+
+table {
+    width: 100%;
+}
+
+th.mat-sort-header-sorted {
+    color: black;
+}
