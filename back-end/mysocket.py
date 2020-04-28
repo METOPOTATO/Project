@@ -281,13 +281,11 @@ def send_email():
     content2 = db.get_notify('to student for allocation')
     c1 = content1['notify_content'] + student
     c2 = content2['notify_content'] + tutor
-
     msg1 = Message( 'To tutor for allocation',body = c1 ,sender='Greenwich', recipients=[tutor])
     msg2 = Message( 'To student for allocation',body = c2 ,sender='Greenwich', recipients=[student])
     mail.send(msg1)
     mail.send(msg2)
     return 'send'
-
 
 @app.route('/get_available_students', methods = ['GET'])
 def get_availablestudent():
@@ -340,7 +338,6 @@ def r_allocate():
     room = (student_email, tutor_email, creator)
     result = db.allocate(room)
     return jsonify({'result':result})
-
 
 if __name__ == '__main__':
     socketio.run(app,port=2222)
