@@ -27,7 +27,9 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-FILE_DIRECTORY = "D://Repositories//Project//back-end//save_file"
+FILE_DIRECTORY = "D://save_file"
+if not os.path.exists(FILE_DIRECTORY):
+   os.makedirs(FILE_DIRECTORY)
 
 import mymodel
 from mymodel import db 
