@@ -52,7 +52,9 @@ export class MyService implements CanActivate {
   saveUser(token: Token) {
     localStorage.setItem('userEmail', token.email)
     localStorage.setItem('userRole', token.role)
+    
     this.role = token.role
+    console.log(this.role)
     localStorage.setItem('userName', token.name)
 
     
@@ -66,7 +68,7 @@ export class MyService implements CanActivate {
             }
           })
         ).subscribe()
-      }
+      } 
   }
 
   saveToken(token: string): void {

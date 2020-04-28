@@ -2,7 +2,11 @@
     <button (click)="getMessages_7()">Get last 7 days</button>
     <button (click)="getMessages_28()">Get last 28 days</button>
 </div>
-
+<hr>
+<div class="col-lg-12 d-flex justify-content-around">
+    <h3>Total messages: {{totalMessages}}</h3>
+    <h3>Average message per student: {{averageMessages|number:'1.1-3'}}</h3>
+</div>
 <hr>
 <mat-form-field>
     <mat-label>Filter</mat-label>
@@ -22,13 +26,21 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Room number</th>
         <td mat-cell *matCellDef="let element"> {{element.room}} </td>
     </ng-container>
-    <ng-container matColumnDef="send">
+    <ng-container matColumnDef="m_send">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Message send</th>
-        <td mat-cell *matCellDef="let element"> {{element.send}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.m_send}} </td>
     </ng-container>
-    <ng-container matColumnDef="receive">
+    <ng-container matColumnDef="m_receive">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Message receive </th>
-        <td mat-cell *matCellDef="let element"> {{element.receive}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.m_receive}} </td>
+    </ng-container>
+    <ng-container matColumnDef="d_send">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents send</th>
+        <td mat-cell *matCellDef="let element"> {{element.m_send}} </td>
+    </ng-container>
+    <ng-container matColumnDef="d_receive">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents receive </th>
+        <td mat-cell *matCellDef="let element"> {{element.m_receive}} </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

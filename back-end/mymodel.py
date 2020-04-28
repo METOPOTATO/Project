@@ -5,7 +5,7 @@ def conn1():
         host = 'localhost',
         user = 'root',
         password = '1234',
-        database = 'project'
+        database = 'project2'
     )
 
 class db:
@@ -15,6 +15,7 @@ class db:
             query1 = 'select * from students where student_email = %s'
             query2 = 'select * from tutors where tutor_email = %s'
             query3 = 'select * from staffs where staff_email = %s'
+            query4 = 'select * from admins where admin_email = %s'
             conn = conn1()
             cursor = conn.cursor(buffered=True , dictionary=True)
             cursor.execute(query1,value)
@@ -32,6 +33,11 @@ class db:
             if result3:
                 result3.update({'role':'staff'})
                 return result3
+            cursor.execute(query4,value)
+            result4 = cursor.fetchone()
+            if result4:
+                result4.update({'role':'admin'})
+                return result4
             conn.close()
             cursor.close()
             
@@ -46,6 +52,7 @@ class db:
             query1 = "insert into students(student_email,student_password,student_name) values(%s,%s,%s)"
             query2 = "insert into staffs(staff_email,staff_password,staff_name) values(%s,%s,%s)"
             query3 = "insert into tutors(tutor_email,tutor_password,tutor_name) values(%s,%s,%s)"
+            query4 = "insert into admins(admin_email,admin_password,admin_name) values(%s,%s,%s)"
             conn =conn1()
             cursor = conn.cursor(buffered=True, dictionary=True)
             if ( user == 'student'):
@@ -54,6 +61,8 @@ class db:
                 cursor.execute(query2,value)
             elif( user == 'tutor'):
                 cursor.execute(query3,value)
+            elif( user == 'admin'):
+                cursor.execute(query4,value)
             conn.commit()
             row_affected = cursor.rowcount
             conn.close()
@@ -325,8 +334,10 @@ class db:
             select a.student_email as student,
             (select student_name from students as d where d.student_email = a.student_email) as name,
             a.room_id as room,
-            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 7 day) as send, 
-            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 7 day) as receive
+            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 7 day) as m_send, 
+            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 7 day) as m_receive,
+            (select count(*) from documents as doc where doc.upload_by = a.student_email and doc.upload_at > date(now()) - interval 7 day) as d_send,
+            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 7 day) as d_receive
             from rooms as a where a.tutor_email= %s;
             '''
             conn =  conn1()
@@ -346,8 +357,10 @@ class db:
             select a.student_email as student,
             (select student_name from students as d where d.student_email = a.student_email) as name,
             a.room_id as room,
-            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 28 day) as send, 
-            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 28 day) as receive
+            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 28 day) as m_send, 
+            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 28 day) as m_receive,
+            (select count(*) from documents as doc where doc.upload_by = a.student_email and doc.upload_at > date(now()) - interval 28 day) as d_send,
+            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 28 day) as d_receive
             from rooms as a where a.tutor_email= %s;
             '''
             conn =  conn1()
@@ -407,7 +420,7 @@ class db:
         conn.close()
         cursor.close()
         return row_affected
-
+    
     def getalltutor(self):
         conn = conn1()
         query = 'select * from tutors'
@@ -418,6 +431,39 @@ class db:
         cursor.close()
         return result
 
+    def get_all_student(self):
+        conn = conn1()
+        query = 'select * from students'
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query)
+        result = cursor.fetchall()
+        conn.close()
+        cursor.close()
+        return result
+
+    def get_all_staff(self):
+        conn = conn1()
+        query = 'select * from staffs'
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query)
+        result = cursor.fetchall()
+        conn.close()
+        cursor.close()
+        return result      
+
+    def get_staff_report(self,staff_email):
+        conn = conn1()
+        query = '''
+        select staff_email,staff_name ,
+        (select count(rooms.creater) as count from rooms where rooms.creater = staff_email) as actions
+        from staffs where staff_email = %s
+        '''
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query,staff_email)
+        result = cursor.fetchone()
+        conn.close()
+        cursor.close()
+        return result 
     def getavilstu(self):
         conn = conn1()
         query = 'select * from students where student_email NOT IN ( select student_email from rooms )'

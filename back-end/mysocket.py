@@ -29,8 +29,8 @@ jwt = JWTManager(app)
 
 FILE_DIRECTORY = "D://Repositories//Project//back-end//save_file"
 
-import zMODEL
-from zMODEL import db 
+import mymodel
+from mymodel import db 
 db = db() 
 
 
@@ -56,6 +56,9 @@ def login():
         elif role == 'staff':
             db_password = account['staff_password']
             name = account['staff_name']
+        elif role == 'admin':
+            db_password = account['admin_password']
+            name = account
         if bcrypt.check_password_hash(db_password,get_password):
             token = create_access_token(identity = email)
     return jsonify({'token':token,'role':role,'email':email,'name':name})
@@ -286,9 +289,6 @@ def send_email():
     return 'send'
 
 
-
-
-########### Huy #############
 @app.route('/get_available_students', methods = ['GET'])
 def get_availablestudent():
     res = db.getavilstu()
@@ -306,6 +306,30 @@ def get_alltutor():
         content = {'mail':result['tutor_email'], 'name':result['tutor_name']}
         string.append(content)
     return jsonify(string)
+
+@app.route('/getallstudent', methods = ['GET'])
+def get_allstudent():
+    res = db.get_all_student()
+    string = []
+    for result in res:
+        content = {'mail':result['student_email'], 'name':result['student_name']}
+        string.append(content)
+    return jsonify(string)
+
+@app.route('/getallstaff', methods = ['GET'])
+def get_allstaff():
+    res = db.get_all_staff()
+    string = []
+    for result in res:
+        content = {'mail':result['staff_email'], 'name':result['staff_name']}
+        string.append(content)
+    return jsonify(string)
+
+@app.route('/get_staff_report',methods = ['GET'])
+def get_staff_report():
+    staff_mail = request.args.get('email')
+    dbresult = db.get_staff_report((staff_mail,))
+    return jsonify(dbresult)
 
 @app.route('/allocation', methods = ['POST'])
 def r_allocate():

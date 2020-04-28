@@ -5,11 +5,11 @@ def conn1():
         host = 'localhost',
         user = 'root',
         password = '1234',
-        database = 'project'
+        database = 'project1'
     )
 
 class db:
-    #login for users
+#    #login for users
     def login(self,value):
         try:
             query1 = 'select * from students where student_email = %s'
@@ -34,13 +34,12 @@ class db:
                 return result3
             conn.close()
             cursor.close()
-            
             return None
         except:
             raise Exception
             return 'wrong'
 
-    #signup--create account
+#    #signup--create account
     def signup(self,user,value):
         try:
             query1 = "insert into students(student_email,student_password,student_name) values(%s,%s,%s)"
@@ -79,10 +78,10 @@ class db:
         except:
             return 'wrong'
 
-    #get room for student
+#    #get room for student
     def getRoom(self,email):
         try:
-            query = 'select room_id from rooms where student_email=%s '
+            query = 'select room_id from rooms join students on students.student_email = %s and rooms.student_id = students.student_id '
             con = conn1()
             cursor =  con.cursor(buffered=True , dictionary=True)
             cursor.execute(query,(email,))
@@ -94,10 +93,14 @@ class db:
             raise Exception
             return 'wrong'
 
-    #get rooms for tutor
+#    #get rooms for tutor
     def get_tutor_rooms(self,tutor):
         try:
-            query = 'select * from rooms where tutor_email=%s'
+            query = '''
+            select a.room_id,a.student_email,b.tutor_email from
+            (select a.room_id,b.student_email,a.tutor_id from rooms as a join students as b where a.student_id = b.student_id) as a
+            join tutors as b where a.tutor_id = b.tutor_id and b.tutor_email = %s;
+            '''
             con = conn1()
             cursor =  con.cursor(buffered=True , dictionary=True)
             cursor.execute(query,(tutor,))
@@ -109,7 +112,7 @@ class db:
             raise Exception
             return 'wrong'
             
-    # insert a message
+#    # insert a message
     def add_message(self,messages):
         try:
             query = "insert into messages(message_content,upload_by,upload_at,room_id) values(%s,%s,%s,%s);"
@@ -125,7 +128,7 @@ class db:
             raise Exception
             return 'wrong'
 
-    # add doccument
+#    # add doccument
     def add_document(self,document):
         try:
             query = "insert into documents(document_name,title,upload_at,upload_by,full_path,room_id) values(%s,%s,%s,%s,%s,%s);"
@@ -141,7 +144,7 @@ class db:
             raise Exception
             return 'wrong'
 
-    # get documents in a room
+#    # get documents in a room
     def get_document(self,room):
         try:
             query = 'select * from documents where room_id = %s'
@@ -156,7 +159,7 @@ class db:
             raise Exception
             return 'wrong'
 
-    # insert event calendar to database
+#    # insert event calendar to database
     def insert_event(self,event):
         try:
             query = "insert into timetable(title,time_start,time_end,corlor,room_id) values(%s,%s,%s,%s,%s);"
@@ -172,7 +175,7 @@ class db:
             raise Exception
             return 'wrong'
 
-    # get events of room
+#    # get events of room
     def get_events(self,room):
         try:
             query = "select * from timetable where room_id = %s"
@@ -187,7 +190,8 @@ class db:
             raise Exception
             return 'wrong'
 
-    #get dashboard data
+#dont use this function
+#    #get dashboard data
     def get_dashboard(self,value):
         try:
             query = "select * from documents where upload_at between %s and %s and room_id = %s"
@@ -202,7 +206,7 @@ class db:
             raise Exception
             return 'wrong'
     
-    # insert comments
+#    # insert comments
     def insert_comment(self,event):
         try:
             query = "insert into comments(comment_content,document_id) values(%s,%s);"
@@ -218,7 +222,7 @@ class db:
             raise Exception
             return 'wrong'
 
-    # get comments
+#    # get comments
     def get_comments(self,id):
         try:
             query = "select * from comments where document_id = %s"
@@ -275,6 +279,7 @@ class db:
         except:
             raise Exception
             return 'wrong'
+
 # student report
     def get_report(self,id):
         try:
@@ -322,12 +327,10 @@ class db:
     def tutor_get_report_message_7(self,tutor_email):
         try:
             query = '''
-            select a.student_email as student,
-            (select student_name from students as d where d.student_email = a.student_email) as name,
-            a.room_id as room,
-            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 7 day) as send, 
-            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 7 day) as receive
-            from rooms as a where a.tutor_email= %s;
+select a.room_id as room ,b.student_name as name,b.student_email as student,
+(select count(*) from messages as c where c.upload_by = %s and c.room_id = a.room_id and c.upload_at > date(now()) - interval 7 day) as send,
+(select count(*) from messages as d where d.upload_by = a.student_id and d .upload_at > date(now()) - interval 7 day) as receive
+from rooms as a join students as b on a.tutor_id = %s and b.student_id = a.student_id;
             '''
             conn =  conn1()
             cursor = conn.cursor(buffered=True , dictionary=True)
@@ -340,19 +343,17 @@ class db:
             raise Exception
             return 'wrong'
 
-    def tutor_get_report_message_28(self,tutor_email):
+    def tutor_get_report_message_28(self,id):
         try:
             query = '''
-            select a.student_email as student,
-            (select student_name from students as d where d.student_email = a.student_email) as name,
-            a.room_id as room,
-            (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 28 day) as send, 
-            (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 28 day) as receive
-            from rooms as a where a.tutor_email= %s;
+            select a.room_id as room ,b.student_name as name,b.student_email as student,
+            (select count(*) from messages as c where c.upload_by = %s and c.room_id = a.room_id and c.upload_at > date(now()) - interval 7 day) as send,
+            (select count(*) from messages as d where d.upload_by = a.student_id and d .upload_at > date(now()) - interval 7 day) as receive
+            from rooms as a join students as b on a.tutor_id = %s and b.student_id = a.student_id;
             '''
             conn =  conn1()
             cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,tutor_email)
+            cursor.execute(query,id)
             result = cursor.fetchall()
             cursor.close()
             conn.close()
@@ -361,16 +362,17 @@ class db:
             raise Exception
             return 'wrong'
 
-    def get_tutor_all_messages(self,email):
+    def get_tutor_all_messages(self,id):
         try:
             query = '''
-            select a.tutor_messages,b.tutor_students from 
-            (select count(*) as tutor_messages  from messages where upload_by = %s) as a,
-            (select count(*) as tutor_students from rooms where tutor_email = %s) as b;
+            select a.room_id as room ,b.student_name as name,b.student_email as student,
+            (select count(*) from messages as c where c.upload_by = %s and c.room_id = a.room_id and c.upload_at > date(now()) - interval 7 day) as send,
+            (select count(*) from messages as d where d.upload_by = a.student_id and d .upload_at > date(now()) - interval 7 day) as receive
+            from rooms as a join students as b on a.tutor_id = %s and b.student_id = a.student_id;
             '''
             conn =  conn1()
             cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,email)
+            cursor.execute(query,id)
             result = cursor.fetchall()
             cursor.close()
             conn.close()
@@ -396,9 +398,28 @@ class db:
         except:
             raise Exception
             return 'wrong'
+
+# for admin role
+    # view staff dashboard
+    def get_staff_dashboard(self,id):
+        try:
+            query = ""
+            conn =  conn1()
+            cursor = conn.cursor(buffered=True , dictionary=True)
+            cursor.execute(query)
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            return result
+        except:
+            raise Exception
+            return 'wrong'
+
+
+
     # allocate 
     def allocate(self,value):
-        query = 'insert into rooms (student_email, tutor_email, creater) values (%s,%s,%s);'
+        query = 'insert into rooms (student_id, tutor_id, creater) values (%s,%s,%s);'
         conn = conn1()
         cursor = conn.cursor(buffered=True , dictionary=True)
         cursor.execute(query,value)
@@ -420,7 +441,7 @@ class db:
 
     def getavilstu(self):
         conn = conn1()
-        query = 'select * from students where student_email NOT IN ( select student_email from rooms )'
+        query = 'select * from students where student_id NOT IN ( select student_id from rooms )'
         cursor = conn.cursor(buffered=True, dictionary=True)
         cursor.execute(query)
         result = cursor.fetchall()

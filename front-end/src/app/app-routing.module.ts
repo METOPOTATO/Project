@@ -14,10 +14,14 @@ import { RoomComponent } from './tutor/room/room.component';
 import { TimetableComponent } from './timetable/timetable.component';
 import { TutorDashboardComponent } from './tutor-dashboard/tutor-dashboard.component';
 import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.component';
+import { StaffMydashboardComponent} from './staff-mydashboard/staff-mydashboard.component'
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
+  {path:'admin',component:AdminComponent,canActivate:[MyService],data:{role:['admin']}},
   {path:'staff',component:StaffComponent,canActivate:[MyService] ,data:{role:['staff']} },
   {path:'staff/dashboard',component:StaffDashboardComponent,canActivate:[MyService] ,data:{role:['staff']} },
+  {path:'staff/mydashboard',component:StaffMydashboardComponent,canActivate:[MyService] ,data:{role:['staff']} },
   {path:'student',component:StudentComponent,canActivate:[MyService] ,data:{role:['student']}},
 
   {path:'tutor',component:TutorComponent,canActivate:[MyService] ,data:{role:['tutor']},

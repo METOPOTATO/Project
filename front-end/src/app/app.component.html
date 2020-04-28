@@ -12,6 +12,9 @@
         <li *ngIf="auth.checkRole()==='tutor'">
             <a class="nav-link" routerLink="/tutor">Tutor</a>
         </li>
+        <li *ngIf="auth.checkRole()==='admin'">
+            <a class="nav-link" routerLink="/admin">Admin</a>
+        </li>
         <li class="nav-item">
             <a class="nav-link" routerLink="/">Contact us</a>
         </li>

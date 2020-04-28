@@ -109,12 +109,14 @@ export class StaffComponent {
     } else {
       this.remove()
       let urlAllocate = 'http://localhost:2222/allocation'
+      let sendMailUrl = 'http://localhost:2222/sendmail'
       for (let i in this.selected) {
         let room: Room = new Room()
         room.creator = localStorage.getItem('userEmail')
         room.student_email = this.selected[i].mail
         room.tutor_email = this.selectedTutor
         this.http.post<any>(urlAllocate, room).subscribe()
+        this.http.post<any>(sendMailUrl,room).subscribe()
       }
     }
   }

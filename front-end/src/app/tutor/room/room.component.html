@@ -45,8 +45,8 @@
                     <div class='col-sm-4'>
                         <h3>{{file.document_name}}</h3>
                         <input class="btn btn-primary" type="button" (click)="download(file.document_name,file.full_path)" value="Download" />
-                        <br><input type="text" [(ngModel)]="comment" placeholder="send comment">
-                        <button (click)="sendComment(file.document_id)">Send</button>
+                        <br>
+                        <input type="text" (keyup.enter)=sendComment($event,file.document_id) placeholder="send comment">
                     </div>
                     <div class="col-sm-7 ">
                         <div class="overflow-auto" style="height: 100px;">

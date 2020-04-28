@@ -29,8 +29,8 @@ jwt = JWTManager(app)
 
 FILE_DIRECTORY = "D://Repositories//Project//back-end//save_file"
 
-import zMODEL
-from zMODEL import db 
+import aMODEL
+from aMODEL import db 
 db = db() 
 
 
@@ -42,7 +42,9 @@ def login():
     email = request.json.get('email')
     get_password = request.json.get('password')
     account = db.login((email,))
+    print(account)
     name =''
+    id = 0
     if account is None:
         return jsonify({'token':''})
     role = account['role']
@@ -50,15 +52,18 @@ def login():
         if role == 'student':
             db_password = account['student_password']
             name = account['student_name']
+            id = account['student_id']
         elif role == 'tutor':
             db_password = account['tutor_password']
             name = account['tutor_name']
+            id = account['tutor_id']
         elif role == 'staff':
             db_password = account['staff_password']
             name = account['staff_name']
+            id = account['staff_id']
         if bcrypt.check_password_hash(db_password,get_password):
             token = create_access_token(identity = email)
-    return jsonify({'token':token,'role':role,'email':email,'name':name})
+    return jsonify({'token':token,'role':role,'email':email,'name':name,'id':id})
 
 # create account for roles
 @app.route('/signup/<role>', methods = ['PUT'])
@@ -113,7 +118,7 @@ def get(room):
     print(data)
     emit('get',data,room= room)
 
-# add a message to datanase
+# add a message to database
 @socketio.on('add_message')
 def add_message(message):
     print('on add_message')
@@ -197,7 +202,7 @@ def add_event(event):
     print(event)
     db.insert_event(event)
 
-# get dashboard date
+# get dashboard between date to date
 @app.route('/dashboard_message', methods = ['GET'])
 def get_dashboard_message():
     print('get dashboard')
@@ -235,21 +240,23 @@ def get_comment(comment):
 @socketio.on('get_report')
 def get_report(id):
     print('get report')
-    result = db.get_report((id['email'],id['email'],id['room']))
+    result = db.get_report((id['id'],id['id'],id['room']))
     print(result)
     emit('get_report',result)
 
 @app.route('/get_report', methods = ['GET'])
 def get_report():
-    email = request.args.get('email')
+    email = request.args.get('id')
     room = request.args.get('room')
     result = db.get_report((email,email,room))
+    print(result)
     return jsonify(result)
+
 
 @app.route('/tutor_get_report_message_7',methods=['GET'])
 def tutor_get_report_message_7():
     print('tutor_get_report_message')
-    email = request.args.get('email')
+    email = request.args.get('id')
     result = db.tutor_get_report_message_7((email,email))
     print(result)
     return jsonify(result)
@@ -257,23 +264,27 @@ def tutor_get_report_message_7():
 @app.route('/tutor_get_report_message_28',methods=['GET'])
 def tutor_get_report_message_28():
     print('tutor_get_report_message')
-    email = request.args.get('email')
+    email = request.args.get('id')
     result = db.tutor_get_report_message_28((email,email))
     print(result)
     return jsonify(result)
 
+# for staff
 @app.route('/get_all_tutor_messages',methods=['GET'])
 def get_all_tutor_messages():
     print('get_all_tutor_messages')
-    email = request.args.get('email')
-    result = db.get_tutor_all_messages((email,email))
+    id = request.args.get('id')
+    print(id)
+    result = db.get_tutor_all_messages((id,id))
     print(result)
     return jsonify(result)
 
 @app.route('/sendmail',methods=['POST'])
 def send_email():
-    tutor = request.json.get('tutor_email')
-    student =  request.json.get('student_email')
+    tutor = request.json.get('tutor_mail')
+    student =  request.json.get('student_mail')
+    print(student)
+    print(tutor)
     content1 = db.get_notify('to tutor for allocation')
     content2 = db.get_notify('to student for allocation')
     c1 = content1['notify_content'] + student
@@ -283,7 +294,7 @@ def send_email():
     msg2 = Message( 'To student for allocation',body = c2 ,sender='Greenwich', recipients=[student])
     mail.send(msg1)
     mail.send(msg2)
-    return 'send'
+    return jsonify({'send':'success'})
 
 
 
@@ -294,7 +305,7 @@ def get_availablestudent():
     res = db.getavilstu()
     string = []
     for result in res:
-        content = {'mail':result['student_email'], 'name':result['student_name']}
+        content = {'id':result['student_id'],'mail':result['student_email'], 'name':result['student_name']}
         string.append(content)
     return jsonify(string)
 
@@ -303,17 +314,18 @@ def get_alltutor():
     res = db.getalltutor()
     string = []
     for result in res:
-        content = {'mail':result['tutor_email'], 'name':result['tutor_name']}
+        content = {'id':result['tutor_id'],'mail':result['tutor_email'], 'name':result['tutor_name']}
         string.append(content)
     return jsonify(string)
 
 @app.route('/allocation', methods = ['POST'])
 def r_allocate():
     print(request)
-    student_email = request.json.get('student_email')
-    tutor_email = request.json.get('tutor_email')
+    student_id = request.json.get('student_id')
+    tutor_id = request.json.get('tutor_id')
     creator =  request.json.get('creator')
-    room = (student_email, tutor_email, creator)
+    room = (student_id, tutor_id, creator)
+    print(room)
     result = db.allocate(room)
     return jsonify({'result':result})
 

@@ -1,0 +1,126 @@
+<div id="wrapper">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/staff">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Hi </div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item">
+            <a (click)="viewStudentDashboard()" class="nav-link">View Student Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a (click)="viewTutorDashboard()" class="nav-link">View Tutor Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a (click)="viewStaffDashboard()" class="nav-link">View Staff Dashboard</a>
+        </li>
+
+    </ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div class="container-fluid">
+                <hr>
+                <mat-form-field>
+                    <mat-label>Select an option</mat-label>
+                    <mat-select [(value)]="selectedValue">
+                        <mat-option *ngFor="let i of listValue" value="{{i.mail}}">
+                            {{i.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <div *ngIf="role=='tutor'">
+                    <button (click)="searchTutor()"> View Tutor: {{selectedValue}}</button>
+                    <hr>
+                    <table mat-table [dataSource]="dataSourceTutor" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="student">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Student Email</th>
+                            <td mat-cell *matCellDef="let element"> {{element.student}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Student Name</th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="room">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Room number</th>
+                            <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="m_send">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Message send</th>
+                            <td mat-cell *matCellDef="let element"> {{element.m_send}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="m_receive">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Message receive </th>
+                            <td mat-cell *matCellDef="let element"> {{element.m_receive}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="d_send">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents send</th>
+                            <td mat-cell *matCellDef="let element"> {{element.m_send}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="d_receive">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Documents receive </th>
+                            <td mat-cell *matCellDef="let element"> {{element.m_receive}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsTutor"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsTutor;"></tr>
+                    </table>
+                </div>
+
+                <div *ngIf="role=='student'">
+                    <button (click)="searchStudent()"> View Student: {{selectedValue}}</button>
+                    <hr>
+                    <table mat-table [dataSource]="dataSourceStudent" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="Actions">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                            <td mat-cell *matCellDef="let element"> {{element.Actions}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Last3days">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 3 days </th>
+                            <td mat-cell *matCellDef="let element"> {{element.Last3days}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Last7days">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 7 days </th>
+                            <td mat-cell *matCellDef="let element"> {{element.Last7days}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Last14days">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 14 days </th>
+                            <td mat-cell *matCellDef="let element"> {{element.Last14days}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Last28days">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 28 days </th>
+                            <td mat-cell *matCellDef="let element"> {{element.Last28days}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsStudent"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsStudent;"></tr>
+                    </table>
+                </div>
+                <div *ngIf="role=='staff'">
+                    <button (click)="searchStaff()"> View Staff: {{selectedValue}}</button>
+                    <hr>
+                    <table mat-table [dataSource]="dataSourceStaff" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="staff_email">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+                            <td mat-cell *matCellDef="let element"> {{element.staff_email}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="staff_name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+                            <td mat-cell *matCellDef="let element"> {{element.staff_name}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions</th>
+                            <td mat-cell *matCellDef="let element"> {{element.actions}} Allocations </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsStaff"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsStaff;"></tr>
+                    </table>
+                </div>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+</div>

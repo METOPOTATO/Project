@@ -71,12 +71,24 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
     this.http.get<any>(this.roomUrl, { params: param }).pipe(
       map((data) => {
         if (data != null) {
-          console.log(data)
           localStorage.setItem('room', data.room_id)
           this.room = localStorage.getItem('room')
-          console.log(this.room)
+          //for messages
           this.getMessage().subscribe((data) => {
             this.listMessage = data;
+          })
+          // for list file
+          this.getListFile()
+          //for report
+          let param = { 'email': localStorage.getItem('userEmail'), 'room': this.room }
+          let url_report = 'http://localhost:2222/get_report'
+          this.http.get<any>(url_report, { params: param }).subscribe(data => {
+            console.log(data)
+            this.dataSource1.push({ 'Actions': 'Messages', 'Last3days': data[0].mes.toString(), 'Last7days': data[1].mes.toString(), 'Last14days': data[2].mes.toString(), 'Last28days': data[3].mes.toString() })
+            this.dataSource1.push({ 'Actions': 'Documents', 'Last3days': data[0].doc.toString(), 'Last7days': data[1].doc.toString(), 'Last14days': data[2].doc.toString(), 'Last28days': data[3].doc.toString() })
+            this.dataSource1.push({ 'Actions': 'Events', 'Last3days': data[0].can.toString(), 'Last7days': data[1].can.toString(), 'Last14days': data[2].can.toString(), 'Last28days': data[3].can.toString() })
+            console.log(this.dataSource1)
+            this.dataSource.data = this.dataSource1
           })
         }
       })
@@ -95,47 +107,17 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   isShowNavBar = true
-
+  userName
   ngOnInit(): void {
+    this.userName = localStorage.getItem('userName')
     this.dataSource.sort = this.sort;
-
     this.messageService.socket.on('message', (data) => {
-      this.listMessage.push(data)
-
-    })
-    this.room = localStorage.getItem('room')
-    this.getListFile()
-
-    //dash board
-
-    // this.getDefaultDashboard()
-    // this.messageService.socket.on('get_report', (data) => {
-    //   this.dataSource1 = []
-    //   console.log(data)
-    //   this.dataSource1.push({ 'Actions': 'Messages', 'Last3days': data[0].mes, 'Last7days': data[1].mes, 'Last14days': data[2].mes, 'Last28days': data[3].mes })
-    //   this.dataSource1.push({ 'Actions': 'Documents', 'Last3days': data[0].doc, 'Last7days': data[1].doc, 'Last14days': data[2].doc, 'Last28days': data[3].doc })
-    //   this.dataSource1.push({ 'Actions': 'Events', 'Last3days': data[0].can, 'Last7days': data[1].can, 'Last14days': data[2].can, 'Last28days': data[3].can })
-    //   this.dataSource = new MatTableDataSource(this.dataSource1)
-    //   this.dataSource.sort = this.sort;
-    // })
-
-
-
-    let param = { 'email': localStorage.getItem('userEmail'), 'room': this.room }
-    let url_message = 'http://localhost:2222/get_report'
-    this.http.get<any>(url_message, { params: param }).subscribe(data => {
       console.log(data)
-      this.dataSource1.push({ 'Actions': 'Messages', 'Last3days': data[0].mes.toString(), 'Last7days': data[1].mes.toString(), 'Last14days': data[2].mes.toString(), 'Last28days': data[3].mes.toString() })
-      this.dataSource1.push({ 'Actions': 'Documents', 'Last3days': data[0].doc.toString(), 'Last7days': data[1].doc.toString(), 'Last14days': data[2].doc.toString(), 'Last28days': data[3].doc.toString() })
-      this.dataSource1.push({ 'Actions': 'Events', 'Last3days': data[0].can.toString(), 'Last7days': data[1].can.toString(), 'Last14days': data[2].can.toString(), 'Last28days': data[3].can.toString() })
-      console.log(this.dataSource1)
-      this.dataSource.data = this.dataSource1
-
+      this.listMessage.push(data)
     })
-
-
 
   }
+
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
@@ -144,29 +126,33 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
 
   send() {
     //send data Message
-    this.fullMessage = new Message()
-    this.fullMessage.content = this.message
-    this.fullMessage.room = parseInt(localStorage.getItem('room'))
-    this.fullMessage.by = localStorage.getItem('userEmail')
-    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en-US')
-
-    this.messageService.send(this.fullMessage)
-    this.message = ''
-    this.messageService.socket.emit('message', this.fullMessage)
-
+    if (localStorage.getItem('room')) {
+      this.fullMessage = new Message()
+      this.fullMessage.content = this.message
+      this.fullMessage.room = parseInt(localStorage.getItem('room'))
+      this.fullMessage.by = localStorage.getItem('userEmail')
+      this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en-US')
+      this.messageService.send(this.fullMessage)
+      this.message = ''
+      this.messageService.socket.emit('message', this.fullMessage)
+    } else {
+      alert('You dont have a room yet')
+    }
   }
   sendk($event) {
     //send data Message
-    this.fullMessage = new Message()
-    this.fullMessage.content = this.message
-    this.fullMessage.room = parseInt(localStorage.getItem('room'))
-    this.fullMessage.by = localStorage.getItem('userEmail')
-    this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en-US')
-
-    this.messageService.send(this.fullMessage)
-    this.message = ''
-    this.messageService.socket.emit('message', this.fullMessage)
-
+    if (localStorage.getItem('room')) {
+      this.fullMessage = new Message()
+      this.fullMessage.content = this.message
+      this.fullMessage.room = parseInt(localStorage.getItem('room'))
+      this.fullMessage.by = localStorage.getItem('userEmail')
+      this.fullMessage.at = formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en-US')
+      this.messageService.send(this.fullMessage)
+      this.message = ''
+      this.messageService.socket.emit('message', this.fullMessage)
+    } else {
+      alert('You dont have a room yet')
+    }
   }
 
   checkSender(m) {
@@ -179,39 +165,44 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isShowMessage = !this.isShowMessage
   }
 
-  // 
   // select file
   onFileSelected(event) {
-
-    this.selectedFile = <File>event.target.files[0]
-
+    if (localStorage.getItem('room')) {
+      this.selectedFile = <File>event.target.files[0]
+    } else {
+      alert('You dont have a room yet')
+    }
   }
   // upload files
   onUpload() {
-    this.fileService.onUpload(this.selectedFile, this.selectedFile.name, this.room).subscribe(
-      (event: HttpEvent<any>) => {
-        switch (event.type) {
-          case HttpEventType.Sent:
-            console.log('Request has been made!');
-            break;
-          case HttpEventType.ResponseHeader:
-            console.log('Response header has been received!');
-            break;
-          case HttpEventType.UploadProgress:
-            this.process = Math.round(event.loaded / event.total * 100)
-            console.log(this.process)
-            break;
-          case HttpEventType.Response:
-            console.log('User successfully created!', event.body);
-            setTimeout(() => {
-              this.process = 0;
-            }, 1000);
+    if (this.selectedFile) {
+      this.fileService.onUpload(this.selectedFile, this.selectedFile.name, this.room).subscribe(
+        (event: HttpEvent<any>) => {
+          switch (event.type) {
+            case HttpEventType.Sent:
+              console.log('Request has been made!');
+              break;
+            case HttpEventType.ResponseHeader:
+              console.log('Response header has been received!');
+              break;
+            case HttpEventType.UploadProgress:
+              this.process = Math.round(event.loaded / event.total * 100)
+              console.log(this.process)
+              break;
+            case HttpEventType.Response:
+              console.log('User successfully created!', event.body);
+              setTimeout(() => {
+                this.process = 0;
+              }, 1000);
+          }
         }
-      }
-    )
-    setTimeout(() => {
-      this.getListFile()
-    }, 500)
+      )
+      setTimeout(() => {
+        this.getListFile()
+      }, 500)
+    } else {
+      alert('No file choosen')
+    }
 
   }
 
@@ -265,7 +256,6 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedDateStart
   selectedDateEnd
   searchDashboard() {
-
     let param = { 'start': this.selectedDateStart, 'end': this.selectedDateEnd, 'room': this.room }
     console.log(param)
     let url_message = 'http://localhost:2222/dashboard_message'
@@ -289,13 +279,13 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
 
   url_comment = 'http://localhost:2222/add_comment'
   comment
-  sendComment(file_id) {
+  sendComment(event,file_id) {
     let co: Comments = new Comments()
-    co.content = this.comment
+    co.content = event.target.value
     co.docId = file_id
     this.http.put<any>(this.url_comment, co, httpOptions).subscribe()
-    this.comment = ""
-    alert('send comment successfully')
+    event.target.value = ""
+    // alert('send comment successfully')
   }
 
   url_show_comment

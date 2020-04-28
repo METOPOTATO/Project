@@ -1,166 +1,187 @@
-<div class="containers">
-    <div class="d-flex justify-content-around" *ngIf="isShowNavBar">
-        <div class="p-2">
-            <button (click)="showFile() " type="button " class="btn btn-primary " aria-label="Close ">
-                    <span aria-hidden="true ">Files</span>
-                </button>
-        </div>
-        <div class="p-2">
-            <button (click)="showMessage() " type="button" class="btn btn-primary " aria-label="Close ">
-                    <span aria-hidden="true ">Message</span>
-                </button>
-        </div>
-
-        <div class="p-2">
-            <button (click)="showTimeTable()" type="button " class="btn btn-primary " aria-label="Close ">
-                    <span aria-hidden="true ">TimeTable</span>
-                    <!-- <router-outlet></router-outlet> -->
-            </button>
-        </div>
-
-        <div class="p-2">
-            <button (click)="showDashboard()" type="button " class="btn btn-primary " aria-label="Close ">
-                    <span aria-hidden="true ">Dasboard</span>
-                    <!-- <router-outlet></router-outlet> -->
-            </button>
-        </div>
-
-    </div>
-
-    <div class="d-flex justify-content-center">
-        <div class="col-sm-10 " *ngIf="isShowFile">
-            <hr>
-            <div class='custom-file justify-content-center'>
-                <input #myInput type="file" (change)="onFileSelected($event)" class="custom-file-input ">
-                <label class='custom-file-label' (click)="onUpload() ">Choose File</label>
-                <div class="d-flex justify-content-center ">
-                    <button type=" button " (click)="onUpload() " class="btn btn-primary ">Upload </button>
-                </div>
+<div id="wrapper">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/staff">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
             </div>
+            <div class="sidebar-brand-text mx-3">Hi {{userName}}</div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item">
+            <a (click)="showFile()" class="nav-link">View Files</a>
+        </li>
+        <li class="nav-item">
+            <a (click)="showMessage()" class="nav-link">View Message</a>
+        </li>
+        <li class="nav-item">
+            <a (click)="showTimeTable()" class="nav-link">View Timetable</a>
+        </li>
+        <li class="nav-item">
+            <a (click)="showDashboard()" class="nav-link">View Dashboard</a>
+        </li>
 
-            <div class="progress form-group " *ngIf="process>0">
-                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="process">
-                    {{process}}
-                </div>
-            </div>
-            <div *ngIf='listFile'>
-                <div class="files" *ngFor="let file of listFile">
-                    <hr>
-                    <div class="single-file row">
-                        <div class='col-sm-4'>
-                            <h3>{{file.document_name}}</h3>
-                            <input class="btn btn-primary" type="button" (click)="download(file.document_name,file.full_path)" value="Download" />
-                            <br><input type="text" [(ngModel)]="comment" placeholder="send comment">
-                            <button (click)="sendComment(file.document_id)">Send</button>
+    </ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div class="container-fluid">
+
+
+                <div class="containers">
+                    <div class="d-flex justify-content-around" *ngIf="isShowNavBar">
+                        <div class="p-2">
+                            <button (click)="showFile() " type="button " class="btn btn-primary " aria-label="Close ">
+                                    <span aria-hidden="true ">Files</span>
+                                </button>
                         </div>
-                        <div class="col-sm-7 ">
-                            <div class="overflow-auto" style="height: 100px;">
-                                <div *ngFor="let comment of comments">
-                                    <p *ngIf="file.document_id==comment.document_id">{{comment.comment_content}}</p>
+                        <div class="p-2">
+                            <button (click)="showMessage() " type="button" class="btn btn-primary " aria-label="Close ">
+                                    <span aria-hidden="true ">Message</span>
+                                </button>
+                        </div>
+
+                        <div class="p-2">
+                            <button (click)="showTimeTable()" type="button " class="btn btn-primary " aria-label="Close ">
+                                    <span aria-hidden="true ">TimeTable</span>
+                            </button>
+                        </div>
+
+                        <div class="p-2">
+                            <button (click)="showDashboard()" type="button " class="btn btn-primary " aria-label="Close ">
+                                    <span aria-hidden="true ">Dasboard</span>
+                                  
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <div class="col-sm-10 " *ngIf="isShowFile">
+                            <hr>
+                            <div class='custom-file justify-content-center'>
+                                <input #myInput type="file" (change)="onFileSelected($event)" class="custom-file-input ">
+                                <label class='custom-file-label' (click)="onUpload() ">Choose File</label>
+                                <div class="d-flex justify-content-center ">
+                                    <button type=" button " (click)="onUpload() " class="btn btn-primary ">Upload </button>
                                 </div>
                             </div>
-                            <button (click)="showComment(file.document_id)">View comment</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- <div class="col-sm-4 up-file" id='form3'></div> -->
-        <div class="col-sm-7 mess" id='form2' *ngIf="isShowMessage">
-            <!-- <div class="container-fluid h-100">
-                <div class="row justify-content-center h-100"> -->
 
-            <!-- <div class="top-message nav justify-content-center">
-                <button (click)="show()" type="button" class="btn btn-dark " aria-label="Close">
-                    Message
-                </button>
-            </div> -->
-            <hr>
-            <div class="card">
-                <div class="card-header msg_head">
-                    <span id="action_menu_btn">
- 
-                    </span>
-                </div>
-                <div class="card-body msg_card_body">
-                    <div class="message" *ngFor="let m of listMessage">
-                        <div class="d-flex justify-content-start mb-4" *ngIf="!checkSender(m)">
-                            <div class="receive">
-                                <span>{{m.message_content}}</span>
-                                <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
+                            <div class="progress form-group " *ngIf="process>0">
+                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="process">
+                                    {{process}}
+                                </div>
+                            </div>
+                            <div *ngIf='listFile'>
+                                <div class="files" *ngFor="let file of listFile">
+                                    <hr>
+                                    <div class="single-file row">
+                                        <div class='col-sm-4'>
+                                            <h3>{{file.document_name}}</h3>
+                                            <input class="btn btn-primary" type="button" (click)="download(file.document_name,file.full_path)" value="Download" />
+                                            <br>
+                                            <input type="text" (keyup.enter)=sendComment($event,file.document_id) placeholder="send comment">
+                                            <!-- <button (click)="sendComment(file.document_id)">Send</button> -->
+                                        </div>
+                                        <div class="col-sm-7 ">
+                                            <div class="overflow-auto" style="height: 100px;">
+                                                <div *ngFor="let comment of comments">
+                                                    <p *ngIf="file.document_id==comment.document_id">{{comment.comment_content}}</p>
+                                                </div>
+                                            </div>
+                                            <button (click)="showComment(file.document_id)">View comment</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end mb-4" *ngIf="checkSender(m)">
-                            <div class="send">
-                                <span>{{m.message_content}}</span>
-                                <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
+                        <!-- <div class="col-sm-4 up-file" id='form3'></div> -->
+                        <div class="col-sm-7 mess" id='form2' *ngIf="isShowMessage">
+                            <!-- <div class="container-fluid h-100">
+                                <div class="row justify-content-center h-100"> -->
+
+                            <!-- <div class="top-message nav justify-content-center">
+                                <button (click)="show()" type="button" class="btn btn-dark " aria-label="Close">
+                                    Message
+                                </button>
+                            </div> -->
+                            <hr>
+                            <div class="card">
+                                <div class="card-header msg_head">
+                                    <span id="action_menu_btn">
+                 
+                                    </span>
+                                </div>
+                                <div class="card-body msg_card_body">
+                                    <div class="message" *ngFor="let m of listMessage">
+                                        <div class="d-flex justify-content-start mb-4" *ngIf="!checkSender(m)">
+                                            <div class="receive">
+                                                <span>{{m.message_content}}</span>
+                                                <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mb-4" *ngIf="checkSender(m)">
+                                            <div class="send">
+                                                <span>{{m.message_content}}</span>
+                                                <div class="msg_time">{{m.upload_at | date:'shortTime'}}</div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-footer">
+                                    <div class="input-group">
+                                        <textarea name="" (keyup.enter)="sendk($event)" class="form-control type_msg" placeholder="Type your message..." [(ngModel)]="message"></textarea>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text send_btn" (click)="send()">
+                                                        <i class="fas fa-location-arrow"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div *ngIf="isShowTimeTable">
+                            <hr>
+                            <app-timetable></app-timetable>
+                        </div>
+                        <div *ngIf="isShowDashboard" class="col-lg-10">
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12 d-flex justify-content-center">
+                                    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+                                        <ng-container matColumnDef="Actions">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.Actions}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="Last3days">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 3 days </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.Last3days}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="Last7days">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 7 days </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.Last7days}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="Last14days">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 14 days </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.Last14days}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="Last28days">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 28 days </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.Last28days}} </td>
+                                        </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    </table>
+                                </div>
                             </div>
 
                         </div>
                     </div>
+                </div>
 
-                </div>
-                <div class="card-footer">
-                    <div class="input-group">
-                        <textarea name="" (keyup.enter)="sendk($event)" class="form-control type_msg" placeholder="Type your message..." [(ngModel)]="message"></textarea>
-                        <div class="input-group-append">
-                            <span class="input-group-text send_btn" (click)="send()">
-                                        <i class="fas fa-location-arrow"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <!-- </div>
-            </div> -->
-        </div>
-
-        <div *ngIf="isShowTimeTable">
-            <hr>
-            <app-timetable></app-timetable>
-        </div>
-
-        <div *ngIf="isShowDashboard" class="col-lg-10">
-            <!-- <hr>
-            <div class="row">
-                <div class="col-lg-10 d-flex justify-content-center">
-                    <input type="text" mwlFlatpickr [(ngModel)]="selectedDateStart" placeholder="Select date" dateFormat="Y-m-d">
-                    <input type="text" mwlFlatpickr [(ngModel)]="selectedDateEnd" placeholder="Select date" dateFormat="Y-m-d">
-                    <button (click)="searchDashboard()">Find</button>
-                    <button (click)="getDefaultDashboard()">Default</button>
-                </div>
-            </div> -->
-
-            <hr>
-            <div class="row">
-                <div class="col-lg-12 d-flex justify-content-center">
-                    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-                        <ng-container matColumnDef="Actions">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Actions}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="Last3days">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 3 days </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Last3days}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="Last7days">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 7 days </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Last7days}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="Last14days">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 14 days </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Last14days}} </td>
-                        </ng-container>
-                        <ng-container matColumnDef="Last28days">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last 28 days </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Last28days}} </td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>

@@ -33,6 +33,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.component';
+import { AdminComponent } from './admin/admin.component';
+import { StaffMydashboardComponent } from './staff-mydashboard/staff-mydashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +49,9 @@ import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.compo
     RoomComponent,
     TimetableComponent,
     TutorDashboardComponent,
-    StaffDashboardComponent
+    StaffDashboardComponent,
+    AdminComponent,
+    StaffMydashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -17,7 +17,7 @@ export class StaffDashboardComponent implements OnInit {
   currentUserDashboard 
 
   dataSource = new MatTableDataSource()
-  displayedColumns: string[] = ['student','name','room', 'send', 'receive']
+  displayedColumns: string[] = ['student','name','room', 'm_send', 'm_receive','d_send','d_receive']
   sort;
   @ViewChild(MatSort, { static: false }) set content(content: ElementRef) {
     this.sort = content;
@@ -87,6 +87,5 @@ export class StaffDashboardComponent implements OnInit {
       console.log(this.totalMessages)
       console.log(this.averageMessages)
     })
-
   }
 }

@@ -168,14 +168,18 @@ export class TimetableComponent implements OnInit {
   end = endOfDay(new Date())
   color = colors.blue
   addEvent(): void {
-    let myEvent = new Event()
-    myEvent.title = this.title
-    myEvent.start = this.start
-    myEvent.end = this.end
-    myEvent.color = this.color
-    myEvent.room = this.room
-    this.socket.emit('calendar', myEvent)
-    this.socket.emit('add_calendar', myEvent)
+    if(localStorage.getItem('userRole')=='student' && !localStorage.getItem('room')){
+      alert('You dont have a room yet')
+    }else{
+      let myEvent = new Event()
+      myEvent.title = this.title
+      myEvent.start = this.start
+      myEvent.end = this.end
+      myEvent.color = this.color
+      myEvent.room = this.room
+      this.socket.emit('calendar', myEvent)
+      this.socket.emit('add_calendar', myEvent)
+    }
   }
 
 

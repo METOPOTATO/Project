@@ -194,13 +194,12 @@ export class RoomComponent implements OnInit,OnDestroy {
 
   url_comment = 'http://localhost:2222/add_comment'
   comment
-  sendComment(file_id){
+  sendComment(event,file_id){
     let co:Comments = new Comments()
-    co.content = this.comment
+    co.content = event.target.value
     co.docId =  file_id
     this.http.put<any>(this.url_comment,co,httpOptions).subscribe()
-    this.comment = ""
-    alert('send comment successfully')
+    event.target.value = ""
   }
 
   url_show_comment

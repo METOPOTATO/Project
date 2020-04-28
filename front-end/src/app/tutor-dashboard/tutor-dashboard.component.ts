@@ -12,7 +12,7 @@ export class TutorDashboardComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
   dataSource = new MatTableDataSource()
-  displayedColumns: string[] = ['student','name','room', 'send', 'receive']
+  displayedColumns: string[] = ['student','name','room', 'm_send', 'm_receive','d_send','d_receive']
   sort;
   @ViewChild(MatSort, { static: false }) set content(content: ElementRef) {
     this.sort = content;
@@ -25,6 +25,7 @@ export class TutorDashboardComponent implements OnInit {
   case 
   ngOnInit(): void {
     this.getMessages_7()
+    this.getTotalMessages()
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -35,11 +36,12 @@ export class TutorDashboardComponent implements OnInit {
     let param = { 'email': localStorage.getItem('userEmail') }
     let url_message = 'http://localhost:2222/tutor_get_report_message_7'
     this.http.get<any>(url_message, { params: param }).subscribe(data => {
+      console.log(data)
       this.dataSource1 = []
       this.report = []
       for(let i of data){
         this.dataSource1.push(i)
-        if(i.receive == 0){
+        if(i.d_receive == 0 && i.m_receive == 0){
           this.report.push(i)
         }
         
@@ -58,13 +60,26 @@ export class TutorDashboardComponent implements OnInit {
       this.report = []
       for(let i of data){
         this.dataSource1.push(i)
-        if(i.receive == 0){
+        if(i.d_receive == 0 && i.m_receive == 0){
           this.report.push(i)
         }
       }
       console.log(this.dataSource1)
       this.dataSource.data = this.dataSource1
 
+    })
+  }
+  totalMessages
+  averageMessages
+  getTotalMessages(){
+    let param = { 'email': localStorage.getItem('userEmail')}
+    let url_message = 'http://localhost:2222/get_all_tutor_messages'
+    this.http.get<any>(url_message,{params:param}).subscribe((data)=>{
+      console.log(data)
+      this.totalMessages = data[0].tutor_messages 
+      this.averageMessages = this.totalMessages / data[0].tutor_students
+      console.log(this.totalMessages)
+      console.log(this.averageMessages)
     })
   }
 }

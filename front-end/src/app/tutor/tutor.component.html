@@ -12,7 +12,7 @@
         </li>
         <li class="nav-item" *ngFor="let room of listRooms">
             <!-- <a [routerLink]="['/tutor/room',room.room_id,'mess']" class="nav-link">Room {{room.room_id}}</a> -->
-            <a [routerLink]="['/tutor/room',room.room_id]" class="nav-link">Room {{room.room_id}}</a>
+            <a [routerLink]="['/tutor/room',room.room_id]" class="nav-link">{{room.student_email}}</a>
         </li>
     </ul>
     <div id="content-wrapper" class="d-flex flex-column">
