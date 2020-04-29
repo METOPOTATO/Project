@@ -11,10 +11,10 @@
 - Run command: pip install -r req.txt 
 
 ## Install frontend 
-- Install node and npm
-- Install angular-cli
+- Install node and npm (https://www.npmjs.com/get-npm). My node version is v12.16.1 and my npm version is npm@6.13.4
+- Install angular-cli (https://angular.io/cli). My angular version is 9.0.7
 - Open folder front-end and run command: npm install
 
 ## Run project
-*. Run back-end: right click on file mysocket and choose Run python fille in terminal
-*. Run front-end: go to folder frontend and type: ng serve or ng s
+- Run back-end: right click on file mysocket and choose Run python file in terminal
+- Run front-end: go to folder frontend and type: ng serve or ng s
