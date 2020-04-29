@@ -2,6 +2,7 @@
 
 ## Install database 
 - You must install mysql server 
+- Create a new database name :project2
 - Then open file: final_project.sql and run it.
 
 ## Install backend 
