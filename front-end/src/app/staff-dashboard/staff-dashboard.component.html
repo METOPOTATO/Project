@@ -45,7 +45,7 @@
                         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                     </ng-container>
                     <ng-container matColumnDef="room">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Room number</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Contact ID</th>
                         <td mat-cell *matCellDef="let element"> {{element.room}} </td>
                     </ng-container>
                     <ng-container matColumnDef="m_send">
@@ -63,6 +63,10 @@
                     <ng-container matColumnDef="d_receive">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Student documents </th>
                         <td mat-cell *matCellDef="let element"> {{element.d_receive}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="events">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Events </th>
+                        <td mat-cell *matCellDef="let element"> {{element.events}} </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

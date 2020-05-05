@@ -59,7 +59,7 @@ export class StaffComponent {
     if ($event.checked) {
       this.selection.select(row)
     } else {
-      this.selection.selected.filter(data => data !== row)
+      this.selection.deselect(row)
     }
     for (let i of this.selection.selected) {
       this.selected.push(i)

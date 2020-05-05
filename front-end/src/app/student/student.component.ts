@@ -151,7 +151,7 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
       this.message = ''
       this.messageService.socket.emit('message', this.fullMessage)
     } else {
-      alert('You dont have a room yet')
+      alert('You dont have any contact with tutor')
     }
   }
 
@@ -170,7 +170,7 @@ export class StudentComponent implements OnInit, OnDestroy, AfterViewInit {
     if (localStorage.getItem('room')) {
       this.selectedFile = <File>event.target.files[0]
     } else {
-      alert('You dont have a room yet')
+      alert('You dont have any contact with tutor')
     }
   }
   // upload files

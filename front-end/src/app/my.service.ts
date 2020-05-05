@@ -52,12 +52,9 @@ export class MyService implements CanActivate {
   saveUser(token: Token) {
     localStorage.setItem('userEmail', token.email)
     localStorage.setItem('userRole', token.role)
-    
     this.role = token.role
     console.log(this.role)
     localStorage.setItem('userName', token.name)
-
-    
       if (localStorage.getItem('userRole') == 'student') {
         let param = { 'student': localStorage.getItem('userEmail') }
         this.http.get<any>(this.roomUrl, { params: param }).pipe(
@@ -102,7 +99,6 @@ export class MyService implements CanActivate {
   }
 
   canActivate(next: ActivatedRouteSnapshot) {
-
     if (!localStorage.getItem('usertoken')) {
       this.router.navigateByUrl('/')
       console.log(this.token)
@@ -115,7 +111,6 @@ export class MyService implements CanActivate {
         return false
       }
     }
-
     return true
   }
 

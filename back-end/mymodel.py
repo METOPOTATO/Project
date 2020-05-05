@@ -5,7 +5,7 @@ def conn1():
         host = 'localhost',
         user = 'root',
         password = '1234',
-        database = 'project2'
+        database = 'project'
     )
 
 class db:
@@ -40,7 +40,6 @@ class db:
                 return result4
             conn.close()
             cursor.close()
-            
             return None
         except:
             raise Exception
@@ -197,19 +196,19 @@ class db:
             return 'wrong'
 
     #get dashboard data
-    def get_dashboard(self,value):
-        try:
-            query = "select * from documents where upload_at between %s and %s and room_id = %s"
-            conn = conn1()
-            cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,value)
-            result = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            return result
-        except:
-            raise Exception
-            return 'wrong'
+    # def get_dashboard(self,value):
+    #     try:
+    #         query = "select * from documents where upload_at between %s and %s and room_id = %s"
+    #         conn = conn1()
+    #         cursor = conn.cursor(buffered=True , dictionary=True)
+    #         cursor.execute(query,value)
+    #         result = cursor.fetchall()
+    #         cursor.close()
+    #         conn.close()
+    #         return result
+    #     except:
+    #         raise Exception
+    #         return 'wrong'
     
     # insert comments
     def insert_comment(self,event):
@@ -242,49 +241,9 @@ class db:
             raise Exception
             return 'wrong'
 
-    #  get  reports
-    def get_report_message(self,id):
-        try:
-            query = "select count(*) as mess from messages where upload_at > date(now()) - interval 7 day and room_id = %s;"
-            conn =  conn1()
-            cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,id)
-            result = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            return result
-        except:
-            raise Exception
-            return 'wrong'
-           
-    def get_report_document(self,id):
-        try:
-            query = "select count(*) as doc from documents where upload_at > date(now()) - interval 7 day and room_id = %s;"
-            conn =  conn1()
-            cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,id)
-            result = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            return result
-        except:
-            raise Exception
-            return 'wrong'
+         
 
-    def get_report_calendar(self,id):
-        try:
-            query = "select count(*) as can from timetable where time_start > date(now()) - interval 7 day and room_id = %s;"
-            conn =  conn1()
-            cursor = conn.cursor(buffered=True , dictionary=True)
-            cursor.execute(query,id)
-            result = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            return result
-        except:
-            raise Exception
-            return 'wrong'
-# student report
+    # student report
     def get_report(self,id):
         try:
             query7 = '''
@@ -337,7 +296,8 @@ class db:
             (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 7 day) as m_send, 
             (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 7 day) as m_receive,
             (select count(*) from documents as doc where doc.upload_by = a.student_email and doc.upload_at > date(now()) - interval 7 day) as d_send,
-            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 7 day) as d_receive
+            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 7 day) as d_receive,
+            (select count(*) from timetable as event where event.room_id = a.room_id) as events
             from rooms as a where a.tutor_email= %s;
             '''
             conn =  conn1()
@@ -360,7 +320,8 @@ class db:
             (select count(*) from messages as b where b.upload_by = %s and b.room_id = a.room_id and b.upload_at > date(now()) - interval 28 day) as m_send, 
             (select count(*) from messages as c where c.upload_by = a.student_email  and c.upload_at > date(now()) - interval 28 day) as m_receive,
             (select count(*) from documents as doc where doc.upload_by = a.student_email and doc.upload_at > date(now()) - interval 28 day) as d_send,
-            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 28 day) as d_receive
+            (select count(*) from documents as doc where doc.upload_by = a.tutor_email  and doc.room_id = a.room_id and doc.upload_at > date(now()) - interval 28 day) as d_receive,
+            (select count(*) from timetable as event where event.room_id = a.room_id) as events
             from rooms as a where a.tutor_email= %s;
             '''
             conn =  conn1()
@@ -399,6 +360,10 @@ class db:
                 query = "select * from notification where notify_id = 1"
             if(event_name == 'to student for allocation'):
                 query = "select * from notification where notify_id = 2"
+            if(event_name == 'to tutor for reallocation'):
+                query = "select * from notification where notify_id = 3"
+            if(event_name == 'to student for reallocation'):
+                query = "select * from notification where notify_id = 4"
             conn =  conn1()
             cursor = conn.cursor(buffered=True , dictionary=True)
             cursor.execute(query)
@@ -420,7 +385,29 @@ class db:
         conn.close()
         cursor.close()
         return row_affected
+
+    def reallocate(self,value):
+        query = 'delete from rooms where room_id = %s'
+        q0 = 'delete from comments as c where c.document_id in ( select document_id from documents where documents.room_id = %s);'
+        q1 = 'delete from documents where room_id = %s'
+        q2 = 'delete from messages where room_id = %s'
+        q3 = 'delete from timetable where room_id = %s'
     
+        conn = conn1()
+        cursor = conn.cursor(buffered=True , dictionary=True)
+        cursor.execute(q0,value)
+        cursor.execute(q1,value)
+        cursor.execute(q2,value)
+        cursor.execute(q3,value)
+        # conn.commit()
+        # cursor = conn.cursor(buffered=True , dictionary=True)
+        cursor.execute(query,value)
+        conn.commit()
+        row_affected = cursor.rowcount
+        conn.close()
+        cursor.close()
+        return row_affected
+
     def getalltutor(self):
         conn = conn1()
         query = 'select * from tutors'
@@ -464,6 +451,18 @@ class db:
         conn.close()
         cursor.close()
         return result 
+
+    def get_room_info(self):
+        conn = conn1()
+        query = 'select * from rooms'
+        cursor = conn.cursor(buffered=True, dictionary=True)
+        cursor.execute(query)
+        result = cursor.fetchall()
+        conn.close()
+        cursor.close()
+        return result   
+
+
     def getavilstu(self):
         conn = conn1()
         query = 'select * from students where student_email NOT IN ( select student_email from rooms )'

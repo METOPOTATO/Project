@@ -17,7 +17,7 @@ export class StaffDashboardComponent implements OnInit {
   currentUserDashboard 
 
   dataSource = new MatTableDataSource()
-  displayedColumns: string[] = ['student','name','room', 'm_send', 'm_receive','d_send','d_receive']
+  displayedColumns: string[] = ['student','name','room', 'm_send', 'm_receive','d_send','d_receive','events']
   sort;
   @ViewChild(MatSort, { static: false }) set content(content: ElementRef) {
     this.sort = content;
@@ -47,7 +47,7 @@ export class StaffDashboardComponent implements OnInit {
       this.report = []
       for(let i of data){
         this.dataSource1.push(i)
-        if(i.receive == 0){
+        if(i.m_receive == 0 && i.d_receive == 0 && i.events ==0){
           this.report.push(i)
         }
         
@@ -66,7 +66,7 @@ export class StaffDashboardComponent implements OnInit {
       this.report = []
       for(let i of data){
         this.dataSource1.push(i)
-        if(i.receive == 0){
+        if(i.m_receive == 0 && i.d_receive == 0 && i.events ==0){
           this.report.push(i)
         }
       }

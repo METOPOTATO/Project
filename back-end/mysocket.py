@@ -35,8 +35,6 @@ import mymodel
 from mymodel import db 
 db = db() 
 
-
-####### Linh ##############
 # login for users
 @app.route('/login', methods = ['POST'])
 def login():
@@ -118,7 +116,7 @@ def get(room):
     print(data)
     emit('get',data,room= room)
 
-# add a message to datanase
+# add a message to database
 @socketio.on('add_message')
 def add_message(message):
     print('on add_message')
@@ -203,19 +201,19 @@ def add_event(event):
     db.insert_event(event)
 
 # get dashboard date
-@app.route('/dashboard_message', methods = ['GET'])
-def get_dashboard_message():
-    print('get dashboard')
-    start = request.args.get('start')
-    print(start)
-    end = request.args.get('end')
-    print(end)
-    room =  request.args.get('room')
-    print(room)
-    value = (start,end,room)
-    result = db.get_dashboard(value)
-    print(result)
-    return jsonify(result)
+# @app.route('/dashboard_message', methods = ['GET'])
+# def get_dashboard_message():
+#     print('get dashboard')
+#     start = request.args.get('start')
+#     print(start)
+#     end = request.args.get('end')
+#     print(end)
+#     room =  request.args.get('room')
+#     print(room)
+#     value = (start,end,room)
+#     result = db.get_dashboard(value)
+#     print(result)
+#     return jsonify(result)
 
 # insert comment
 @app.route('/add_comment', methods = ['PUT'])
@@ -287,7 +285,21 @@ def send_email():
     msg2 = Message( 'To student for allocation',body = c2 ,sender='Greenwich', recipients=[student])
     mail.send(msg1)
     mail.send(msg2)
-    return 'send'
+    return jsonify('send')
+
+@app.route('/sendmail_reallocation',methods=['POST'])
+def send_email_re():
+    tutor = request.json.get('tutor_email')
+    student =  request.json.get('student_email')
+    content3 = db.get_notify('to tutor for reallocation')
+    content4 = db.get_notify('to student for reallocation')
+    c3 = content3['notify_content'] + student
+    c4 = content4['notify_content'] + tutor
+    msg1 = Message( 'To tutor for reallocation',body = c3 ,sender='Greenwich', recipients=[tutor])
+    msg2 = Message( 'To student for reallocation',body = c4 ,sender='Greenwich', recipients=[student])
+    mail.send(msg1)
+    mail.send(msg2)
+    return jsonify('send')
 
 @app.route('/get_available_students', methods = ['GET'])
 def get_availablestudent():
@@ -340,6 +352,20 @@ def r_allocate():
     room = (student_email, tutor_email, creator)
     result = db.allocate(room)
     return jsonify({'result':result})
+
+@app.route('/reallocation', methods = ['POST'])
+def reallocate():
+    print(request)
+    room = request.json.get('id')  
+    
+    result = db.reallocate((room,))
+    return jsonify({'result':result})
+
+@app.route('/get_room',methods = ['GET'])
+def get_room():
+    print('get room')
+    result = db.get_room_info()
+    return jsonify(result)
 
 if __name__ == '__main__':
     socketio.run(app,port=2222)

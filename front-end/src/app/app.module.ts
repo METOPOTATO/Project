@@ -35,6 +35,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { StaffDashboardComponent } from './staff-dashboard/staff-dashboard.component';
 import { AdminComponent } from './admin/admin.component';
 import { StaffMydashboardComponent } from './staff-mydashboard/staff-mydashboard.component';
+import { StaffReallocateComponent } from './staff-reallocate/staff-reallocate.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +52,8 @@ import { StaffMydashboardComponent } from './staff-mydashboard/staff-mydashboard
     TutorDashboardComponent,
     StaffDashboardComponent,
     AdminComponent,
-    StaffMydashboardComponent
+    StaffMydashboardComponent,
+    StaffReallocateComponent
   ],
   imports: [
     BrowserModule,
